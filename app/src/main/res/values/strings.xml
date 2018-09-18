@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TMDB</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_fragment">Standard Fragment</string>
+    <string translatable="false" name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="btn_ok">OK</string>
+    <string name="format_title_date">%1$s (%2$s)</string>
+</resources>
