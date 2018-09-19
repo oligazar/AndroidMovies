@@ -111,6 +111,17 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:layout_anchor="@id/collapsingToolbar"
+        app:layout_anchorGravity="bottom"
+        tools:progress="45"/>
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -154,15 +165,16 @@
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
 
-        <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fab_margin"
-                app:layout_anchor="@id/collapsingToolbar"
-                app:layout_anchorGravity="bottom|end"
-                android:tint="@color/colorAccent"
-                app:backgroundTint="@color/colorWhite"
-                app:srcCompat="@drawable/ic_favorite"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/collapsingToolbar"
+        app:layout_anchorGravity="bottom|end"
+        android:tint="@color/colorAccent"
+        app:backgroundTint="@color/colorWhite"
+        app:layout_behavior="us.kostenko.architecturecomponentstmdb.common.ToolbarAwareFABBehavior"
+        app:srcCompat="@drawable/ic_favorite"/>
 
 </android.support.design.widget.CoordinatorLayout>
