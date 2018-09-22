@@ -24,7 +24,7 @@ data class Movie(
     var originalTitle: String,
     var genres: ArrayList<Genre>,
     @SerializedName("genre_ids")    // TODO: transform genres to genreIds and genreNames
-    var genreIds: ArrayList<Int>,
+    var genreIds: ArrayList<Int>? = null,
     var budget: Int,
     var lastRefresh: Date?,
     var liked: Boolean = false

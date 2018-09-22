@@ -8,6 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_movies.*
+import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.android.Main
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.common.GridItemDecorator
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
@@ -44,11 +49,16 @@ class MoviesFragment : Fragment() {
 //        viewModel.movies.observe(this, Observer {
 //            Timber.d("movies: $it")
 //        })
-        recycler.apply {
-            adapter = MoviesAdapter(viewModel.movies)
-            layoutManager = GridLayoutManager(activity, 2)
-            addItemDecoration(GridItemDecorator(2, 8, 8,true))
-            setHasFixedSize(true)
+        GlobalScope.launch {
+            val movies = viewModel.getMovies()
+            withContext(Dispatchers.Main) {
+                recycler.apply {
+                    adapter = MoviesAdapter(movies)
+                    layoutManager = GridLayoutManager(activity, 2)
+                    addItemDecoration(GridItemDecorator(2, 8, 8,true))
+                    setHasFixedSize(true)
+                }
+            }
         }
     }
 }

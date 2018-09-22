@@ -1,6 +1,5 @@
 package us.kostenko.architecturecomponentstmdb.master.repository
 
-import kotlinx.coroutines.experimental.runBlocking
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
 import java.util.*
@@ -16,9 +15,7 @@ class MoviesRepository(private val webService: MoviesWebService) {
 //        return ldMovies
 //    }
 
-    fun getMovies(): ArrayList<Movie> {
-        return runBlocking {
-            webService.getMovies().await().results
-        }
+    suspend fun getMovies(): ArrayList<Movie> {
+        return webService.getMovies().await().results
     }
 }

@@ -41,12 +41,14 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
     implementation "android.arch.persistence.room:runtime:1.1.1"
+    implementation "android.arch.paging:runtime:1.0.1"
     implementation 'com.squareup.picasso:picasso:2.71828'
     testImplementation "android.arch.persistence.room:testing:1.1.1"
 
     kapt "android.arch.persistence.room:compiler:1.1.1"
     kapt "android.arch.lifecycle:compiler:1.1.1"
     kapt "com.android.databinding:compiler:3.1.4"
+
 
 //  Gson
     implementation 'com.google.code.gson:gson:2.8.2'
@@ -70,5 +72,4 @@ dependencies {
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
-    mavenCentral()
 }
