@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import timber.log.Timber
 
 
 class GridItemDecorator(private val gridSize: Int,
@@ -21,7 +20,6 @@ class GridItemDecorator(private val gridSize: Int,
         val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewAdapterPosition
 
         outRect.top = if (itemPosition < gridSize) context.dp(top) else  bit * gridSize
-        Timber.d("childs: ${parent.childCount}")
 
         val rowPosition = itemPosition % gridSize
         if (sides) {

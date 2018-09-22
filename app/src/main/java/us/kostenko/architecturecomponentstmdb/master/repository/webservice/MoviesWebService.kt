@@ -1,6 +1,6 @@
 package us.kostenko.architecturecomponentstmdb.master.repository.webservice
 
-import kotlinx.coroutines.experimental.Deferred
+import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 import us.kostenko.architecturecomponentstmdb.common.api.API_KEY
@@ -15,8 +15,8 @@ interface MoviesWebService {
      */
 
     @GET("movie/upcoming")
-    fun getMovies(@Query("api_key") apiKey: String = API_KEY,
-                  @Query("language") language: String = "en-US",
-                  @Query("page") page: Int = 1,
-                  @Query("region") region: String? = null): Deferred<Movies>
+    fun getMovies(@Query("page") page: Int,
+                  @Query("region") region: String? = null,
+                  @Query("api_key") apiKey: String = API_KEY,
+                  @Query("language") language: String = "en-US"): Call<Movies>
 }

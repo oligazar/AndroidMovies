@@ -1,8 +1,6 @@
 package us.kostenko.architecturecomponentstmdb.master.repository
 
-import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
-import java.util.*
 
 class MoviesRepository(private val webService: MoviesWebService) {
 
@@ -15,7 +13,7 @@ class MoviesRepository(private val webService: MoviesWebService) {
 //        return ldMovies
 //    }
 
-    suspend fun getMovies(): ArrayList<Movie> {
-        return webService.getMovies().await().results
-    }
+//    suspend fun getMovies(): ArrayList<Movie> {
+//        return webService.getMovies(1).results
+//    }
 }
