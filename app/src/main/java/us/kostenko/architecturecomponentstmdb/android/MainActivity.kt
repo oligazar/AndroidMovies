@@ -3,10 +3,8 @@ package us.kostenko.architecturecomponentstmdb.android
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import us.kostenko.architecturecomponentstmdb.R
-import us.kostenko.architecturecomponentstmdb.common.api.MOVIE_ID
-import us.kostenko.architecturecomponentstmdb.common.create
 import us.kostenko.architecturecomponentstmdb.common.utils.inTransaction
-import us.kostenko.architecturecomponentstmdb.details.view.MovieDetailFragment
+import us.kostenko.architecturecomponentstmdb.master.view.MoviesFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,7 +13,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
-                replace(R.id.container, MovieDetailFragment.create(MOVIE_ID))
+//                replace(R.id.container, MovieDetailFragment.create(MOVIE_ID))
+                replace(R.id.container, MoviesFragment())
             }
         }
 

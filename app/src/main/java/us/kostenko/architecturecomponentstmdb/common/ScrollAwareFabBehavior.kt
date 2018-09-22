@@ -1,17 +1,12 @@
 package us.kostenko.architecturecomponentstmdb.common
 
-import android.content.Context
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
-import android.util.AttributeSet
 import android.view.View
 
 
-class ToolbarAwareFABBehavior(context: Context,
-                             attrs: AttributeSet) : CoordinatorLayout.Behavior<FloatingActionButton>() {
-
-    private val toolbarHeight = 150
+class ToolbarAwareFABBehavior: CoordinatorLayout.Behavior<FloatingActionButton>() {
 
     override fun onDependentViewChanged(parent: CoordinatorLayout, child: FloatingActionButton,
                                         dependency: View): Boolean {

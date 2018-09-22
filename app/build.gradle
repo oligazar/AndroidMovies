@@ -4,10 +4,6 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
-
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -25,6 +21,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding { enabled = true }
 }
 
 dependencies {
@@ -49,6 +46,7 @@ dependencies {
 
     kapt "android.arch.persistence.room:compiler:1.1.1"
     kapt "android.arch.lifecycle:compiler:1.1.1"
+    kapt "com.android.databinding:compiler:3.1.4"
 
 //  Gson
     implementation 'com.google.code.gson:gson:2.8.2'
@@ -57,7 +55,8 @@ dependencies {
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
 //  Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.25.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.26.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.26.0"
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.0'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
@@ -67,4 +66,9 @@ dependencies {
 
     debugImplementation 'com.facebook.stetho:stetho:1.5.0'
     debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+}
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }

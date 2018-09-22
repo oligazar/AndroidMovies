@@ -1,6 +1,7 @@
 package us.kostenko.architecturecomponentstmdb.details.repository
 
 import android.arch.lifecycle.LiveData
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.details.repository.persistance.MovieDao
@@ -13,7 +14,7 @@ class MovieDetailRepository(private val webService: MovieWebService,
                             private val movieDao: MovieDao) {
 
     fun getMovie(id: Int): LiveData<Movie>  {
-        launch { refreshMovie(id) }    // TODO: на каком потоке это будет происходить?
+        GlobalScope.launch { refreshMovie(id) }
         return movieDao.getMovie(id)
     }
 

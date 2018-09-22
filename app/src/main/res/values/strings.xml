@@ -7,4 +7,5 @@
     <string translatable="false" name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="btn_ok">OK</string>
     <string name="format_title_date">%1$s (%2$s)</string>
+    <string name="empty_date">No date set</string>
 </resources>

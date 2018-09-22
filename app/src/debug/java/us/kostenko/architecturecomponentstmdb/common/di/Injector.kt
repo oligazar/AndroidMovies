@@ -10,6 +10,8 @@ import us.kostenko.architecturecomponentstmdb.common.api.retrofit.RetrofitManage
 import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepository
 import us.kostenko.architecturecomponentstmdb.details.repository.persistance.MovieDatabase
 import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
+import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepository
+import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
 
 object Injector: Injection {
 
@@ -28,5 +30,12 @@ object Injector: Injection {
         val webService = RetrofitManager.createService(application, MovieWebService::class.java)
         val movieDao = Room.databaseBuilder(application, MovieDatabase::class.java, "movie-database").fallbackToDestructiveMigration().build().movieDao()
         return MovieDetailRepository(webService, movieDao)
+    }
+
+    override fun provideMoviesRepository(application: Application): MoviesRepository {
+        val webService = RetrofitManager.createService(application, MoviesWebService::class.java)
+//        val moviesDao = Room.databaseBuilder(application, MoviesDatabase::class.java, "my-database")
+//                .build().moviesDao()
+        return MoviesRepository(webService)
     }
 }
