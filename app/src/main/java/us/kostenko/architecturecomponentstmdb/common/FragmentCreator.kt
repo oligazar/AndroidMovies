@@ -41,7 +41,3 @@ fun FragmentCreator<Int>.create(param: Int): Fragment {
         }
     }
 }
-
-object SomeKotlinClass {
-
-}
