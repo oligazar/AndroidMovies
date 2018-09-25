@@ -27,7 +27,7 @@ class TmdbRetrofitBuilder(private val context: Context): RetrofitBuilder() {
     }
 
     // TODO: Posibly change it to Mosbly: https://medium.com/@BladeCoder/advanced-json-parsing-techniques-using-moshi-and-kotlin-daf56a7b963d
-    override fun buildConverterFactory(): Converter.Factory = createGsonConverterFactory{
+    override fun buildConverterFactory(): Converter.Factory = createGsonConverterFactory {
         //        registerTypeAdapter(TicketMenuRoot::class.java, RootItemDeserializer())
         setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
     }

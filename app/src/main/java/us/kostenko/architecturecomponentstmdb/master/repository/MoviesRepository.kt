@@ -1,58 +1,62 @@
 package us.kostenko.architecturecomponentstmdb.master.repository
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.paging.PageKeyedDataSource
+import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.CoroutineScope
 import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.android.Main
 import kotlinx.coroutines.experimental.launch
+import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
+import us.kostenko.architecturecomponentstmdb.details.repository.persistance.MovieDao
 import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
+import java.util.*
 
-class MoviesRepository(private val webService: MoviesWebService) {
+class MoviesRepository(private val webService: MoviesWebService,
+                       private val movieDao: MovieDao) {
 
-//    fun getMovies(): LiveData<ArrayList<Movie>> {
-//        val ldMovies = MutableLiveData<ArrayList<Movie>>()
-//        GlobalScope.launch {
-//            val movies = webService.getMovies().await()
-//            ldMovies.postValue(movies.results)
-//        }
-//        return ldMovies
-//    }
+    private lateinit var pagedList: LiveData<PagedList<Movie>>
 
     fun getMovies(): LiveData<PagedList<Movie>> {
-        val movieData = MutableLiveData<PagedList<Movie>>()
-        val config = PagedList.Config.Builder().setPageSize(10).setEnablePlaceholders(false).build()
-        val dataSource = MoviesDataSource()
-        val list = PagedList.Builder(dataSource, config)
-                .setFetchExecutor { it.run() }
-                .setNotifyExecutor { GlobalScope.launch(Dispatchers.Main) { it.run() }}.build()
-        movieData.value = list
-        return movieData
+        val config = PagedList.Config.Builder()
+                        .setPageSize(PAGE_SIZE)
+                        .setEnablePlaceholders(true).build()
+        pagedList = LivePagedListBuilder<Int, Movie>(movieDao.getMovies(), config)
+                .setBoundaryCallback(movieBoundaryCallback()).build()
+        return pagedList
     }
 
-//        val factory =
-//        val liveDataPl = LivePagedListBuilder<Int, Movie>(factory, config).build()
+    private fun movieBoundaryCallback() = object: PagedList.BoundaryCallback<Movie>() {
 
-    inner class MoviesDataSource: PageKeyedDataSource<Int, Movie>() {
+        private var lastRequestedPage = 1
+        private var sortOrder = 1
+        private var isLoading = false
 
-        override fun loadInitial(params: LoadInitialParams<Int>,
-                                         callback: LoadInitialCallback<Int, Movie>) {
-            GlobalScope.launch {
-                val movies = webService.getMovies(1).await().results
-                callback.onResult(movies, null, 2)
+        override fun onItemAtEndLoaded(itemAtEnd: Movie) = requestAndSaveTheData()
+
+        override fun onZeroItemsLoaded() = requestAndSaveTheData()
+
+        private fun requestAndSaveTheData() {
+            launchIfNotLoading {
+                val movies = webService.getMovies(lastRequestedPage).await().results
+                movies.map { it.dateUpdate = Date(); it.sort = sortOrder++ }
+                Timber.d("movies from Gson: $movies")
+                movieDao.saveMovies(movies)
+                lastRequestedPage++
             }
         }
 
-        override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
+        private fun launchIfNotLoading(callback: suspend CoroutineScope.() -> Unit) {
+            if (isLoading) return
             GlobalScope.launch {
-                val movies = webService.getMovies(params.key).await().results
-                callback.onResult(movies, params.key + 1)
+                isLoading = true
+                callback()
+                isLoading = false
             }
         }
+    }
 
-        override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) { }
+    companion object {
+        const val PAGE_SIZE = 20
     }
 }

@@ -16,18 +16,21 @@ data class Movie(
     @SerializedName("release_date")
     var releaseDate: String,
     @SerializedName("poster_path")
-    var posterPath: String,
+    var posterPath: String? = null,
+    @SerializedName("backdrop_path")
+    var backdropPath: String? = null,
     var overview: String,
     @SerializedName("original_language")
     var originalLanguage: String,
     @SerializedName("original_title")
     var originalTitle: String,
-    var genres: ArrayList<Genre>,
+    var genres: ArrayList<Genre>? = null,
     @SerializedName("genre_ids")    // TODO: transform genres to genreIds and genreNames
     var genreIds: ArrayList<Int>? = null,
     var budget: Int,
-    var lastRefresh: Date?,
-    var liked: Boolean = false
+    var dateUpdate: Date = Date(),
+    var liked: Boolean = false,
+    var sort: Int
                 )
 
 data class Genre(

@@ -23,7 +23,7 @@ class MovieDetailRepository(private val webService: MovieWebService,
         if(!movieExist) {
             try {
                 val movie = webService.getMovie(id).await()
-                movie.lastRefresh = Date()
+                movie.dateUpdate = Date()
                 movieDao.save(movie)
             } catch (e: Throwable) {
                 e.printStackTrace()

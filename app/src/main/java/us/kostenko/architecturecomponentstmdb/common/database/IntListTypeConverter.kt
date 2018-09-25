@@ -10,7 +10,8 @@ class IntListTypeConverter {
 
 
     @TypeConverter
-    fun stringToInts(genres: String?): ArrayList<Int> {
-        return ArrayList(genres?.split(",")?.map { it.toInt() } ?: listOf())
-    }
+    fun stringToInts(genres: String?) = ArrayList(genres?.split(",")?.asSequence()
+                                 ?.map { it.toIntOrNull() }
+                                 ?.filterNotNull()?.toList()
+                                 ?: listOf())
 }

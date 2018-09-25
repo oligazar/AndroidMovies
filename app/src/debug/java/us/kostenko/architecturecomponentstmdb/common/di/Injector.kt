@@ -1,14 +1,13 @@
 package us.kostenko.architecturecomponentstmdb.common.di
 
 import android.app.Application
-import android.arch.persistence.room.Room
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import us.kostenko.architecturecomponentstmdb.common.api.retrofit.RetrofitManager
 import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepository
-import us.kostenko.architecturecomponentstmdb.details.repository.persistance.MovieDatabase
+import us.kostenko.architecturecomponentstmdb.details.repository.persistance.MovieDatabaseHolder
 import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
 import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepository
 import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
@@ -28,14 +27,13 @@ object Injector: Injection {
 
     override fun provideMovieDetailRepository(application: Application): MovieDetailRepository {
         val webService = RetrofitManager.createService(application, MovieWebService::class.java)
-        val movieDao = Room.databaseBuilder(application, MovieDatabase::class.java, "movie-database").fallbackToDestructiveMigration().build().movieDao()
+        val movieDao = MovieDatabaseHolder.instance(application)
         return MovieDetailRepository(webService, movieDao)
     }
 
     override fun provideMoviesRepository(application: Application): MoviesRepository {
         val webService = RetrofitManager.createService(application, MoviesWebService::class.java)
-//        val moviesDao = Room.databaseBuilder(application, MoviesDatabase::class.java, "my-database")
-//                .build().moviesDao()
-        return MoviesRepository(webService)
+        val movieDao = MovieDatabaseHolder.instance(application)
+        return MoviesRepository(webService, movieDao)
     }
 }
