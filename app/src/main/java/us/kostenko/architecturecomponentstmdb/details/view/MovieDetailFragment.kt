@@ -2,26 +2,19 @@ package us.kostenko.architecturecomponentstmdb.details.view
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.databinding.BindingAdapter
-import android.databinding.BindingConversion
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.R
-import us.kostenko.architecturecomponentstmdb.common.FragmentCreator
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
-import us.kostenko.architecturecomponentstmdb.common.utils.setImage
-import us.kostenko.architecturecomponentstmdb.common.utils.tmdbPicPath
 import us.kostenko.architecturecomponentstmdb.common.utils.viewModelFactory
+import us.kostenko.architecturecomponentstmdb.common.view.FragmentCreator
 import us.kostenko.architecturecomponentstmdb.databinding.FragmentMovieDetailBinding
-import us.kostenko.architecturecomponentstmdb.details.model.Genre
 import us.kostenko.architecturecomponentstmdb.details.viewmodel.MovieDetailViewModel
 
 
@@ -35,7 +28,7 @@ import us.kostenko.architecturecomponentstmdb.details.viewmodel.MovieDetailViewM
  */
 class MovieDetailFragment: Fragment() {
 
-    lateinit var binding: FragmentMovieDetailBinding
+    private lateinit var binding: FragmentMovieDetailBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -58,7 +51,8 @@ class MovieDetailFragment: Fragment() {
         val viewModel = ViewModelProviders
                 .of(this, viewModelFactory { MovieDetailViewModel(activity!!.application, param) })
                 .get(MovieDetailViewModel::class.java)
-        Timber.d("Just test")
+
+        binding.viewModel = viewModel
         viewModel.movie.observe(this, Observer { movie ->
             binding.movie = movie
             Timber.d("movie: $movie")

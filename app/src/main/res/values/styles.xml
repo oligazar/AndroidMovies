@@ -19,4 +19,8 @@
         <item name="android:textColorSecondary">@color/colorText</item>
     </style>
 
+    <style parent="Theme.AppCompat.NoActionBar" name="SplashTheme">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+    </style>
+
 </resources>

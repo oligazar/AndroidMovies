@@ -6,5 +6,6 @@
     <color name="colorText">#000000</color>
     <color name="colorGray">#36373b</color>
     <color name="colorGrayLight">#6f7073</color>
-    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorWhite">#FFFFFF</color>    <!-- Panes -->
+    <color name="colorSplash">#3E4649</color>
 </resources>

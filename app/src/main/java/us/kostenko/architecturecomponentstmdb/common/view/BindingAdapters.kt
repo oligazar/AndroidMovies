@@ -1,4 +1,4 @@
-package us.kostenko.architecturecomponentstmdb.common
+package us.kostenko.architecturecomponentstmdb.common.view
 
 import android.databinding.BindingAdapter
 import android.databinding.BindingConversion

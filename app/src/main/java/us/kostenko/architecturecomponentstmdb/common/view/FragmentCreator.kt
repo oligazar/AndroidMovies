@@ -1,4 +1,4 @@
-package us.kostenko.architecturecomponentstmdb.common
+package us.kostenko.architecturecomponentstmdb.common.view
 
 import android.os.Bundle
 import android.os.Parcelable

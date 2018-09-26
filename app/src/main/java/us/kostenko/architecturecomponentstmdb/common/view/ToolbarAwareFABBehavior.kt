@@ -1,4 +1,4 @@
-package us.kostenko.architecturecomponentstmdb.common
+package us.kostenko.architecturecomponentstmdb.common.view
 
 import android.content.Context
 import android.support.design.widget.AppBarLayout

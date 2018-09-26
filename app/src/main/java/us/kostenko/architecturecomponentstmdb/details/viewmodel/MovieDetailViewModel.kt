@@ -11,7 +11,11 @@ import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepo
 
 class MovieDetailViewModel(application: Application, private var movieId: Int = 0): AndroidViewModel(application) {
 
+    private val repo: MovieDetailRepository by lazy { Injector.provideMovieDetailRepository(application) }
+
     val movie: LiveData<Movie> by lazy { repo.getMovie(movieId) }
 
-    private val repo: MovieDetailRepository by lazy { Injector.provideMovieDetailRepository(application) }
+    fun like(id: Int, like: Boolean) {
+        repo.like(id, like)
+    }
 }
