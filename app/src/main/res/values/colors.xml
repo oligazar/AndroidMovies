@@ -4,8 +4,11 @@
     <color name="colorPrimaryDark">#4d4d51</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorText">#000000</color>
+    <color name="colorTextDark">#2d2d2d</color>
     <color name="colorGray">#36373b</color>
     <color name="colorGrayLight">#6f7073</color>
     <color name="colorWhite">#FFFFFF</color>    <!-- Panes -->
     <color name="colorSplash">#3E4649</color>
+    <color name="colorOk">@color/colorAccent</color>
+    <color name="colorWarn">#c69203</color>
 </resources>

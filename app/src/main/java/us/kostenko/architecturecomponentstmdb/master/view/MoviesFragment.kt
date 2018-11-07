@@ -1,15 +1,16 @@
 package us.kostenko.architecturecomponentstmdb.master.view
 
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_movies.*
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
+import kotlinx.android.synthetic.main.fragment_movies.recycler
+import kotlinx.android.synthetic.main.fragment_movies.toolbar
 import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
 import us.kostenko.architecturecomponentstmdb.common.utils.inTransaction

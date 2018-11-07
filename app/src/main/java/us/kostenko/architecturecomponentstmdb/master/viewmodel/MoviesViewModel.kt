@@ -1,9 +1,9 @@
 package us.kostenko.architecturecomponentstmdb.master.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.LiveData
-import android.arch.paging.PagedList
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.paging.PagedList
 import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
 import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepository

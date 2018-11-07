@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
 android {
@@ -12,7 +12,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -25,48 +25,53 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    def androidx_version = "1.0.0"
+
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:exifinterface:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
+    implementation "androidx.appcompat:appcompat:$androidx_version"
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation "androidx.legacy:legacy-support-v4:$androidx_version"
+    implementation "androidx.exifinterface:exifinterface:$androidx_version"
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation "androidx.core:core-ktx:$androidx_version"
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
+    testImplementation 'com.willowtreeapps.assertk:assertk:0.9'
+    // Optional -- Robolectric environment
+    testImplementation 'androidx.test:core:1.0.0'
+    // Optional -- Mockito framework
+    testImplementation 'org.mockito:mockito-core:2.23.0'
+    testImplementation 'androidx.room:room-testing:2.1.0-alpha02'
+    testImplementation 'com.google.truth:truth:0.42'
+    testImplementation 'androidx.arch.core:core-testing:2.0.0'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation "com.squareup.okhttp3:logging-interceptor:3.11.0"
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-
-    implementation "android.arch.persistence.room:runtime:1.1.1"
-    implementation "android.arch.paging:runtime:1.0.1"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.room:room-runtime:2.1.0-alpha02'
+    implementation 'androidx.paging:paging-runtime:2.1.0-beta01'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    testImplementation "android.arch.persistence.room:testing:1.1.1"
-
-    kapt "android.arch.persistence.room:compiler:1.1.1"
-    kapt "android.arch.lifecycle:compiler:1.1.1"
-    kapt "com.android.databinding:compiler:3.1.4"
-
-//  Gson
+    kapt "androidx.room:room-compiler:2.1.0-alpha01"
+    kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
+    //    kapt "androidx.databinding:databinding-compiler:3.2.1"
+    kapt group: 'androidx.databinding', name: 'compiler', version: '3.2.0-alpha11'
+    //  Gson
     implementation 'com.google.code.gson:gson:2.8.2'
-    implementation "com.squareup.retrofit2:converter-gson:2.4.0"
-
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
-
-//  Coroutines
+    //  Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.26.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.26.0"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.26.0'
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.0'
-
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true
     }
-
     debugImplementation 'com.facebook.stetho:stetho:1.5.0'
     debugImplementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0'
 }
 
 repositories {

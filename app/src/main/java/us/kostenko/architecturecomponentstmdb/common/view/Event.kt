@@ -1,6 +1,6 @@
 package us.kostenko.architecturecomponentstmdb.common.view
 
-class Event<out T>(private val value: T) {
+data class Event<out T>(private val value: T) {
 
     var hasBeenHandled = false
         private set // Allow external read but not write

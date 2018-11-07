@@ -1,6 +1,6 @@
 package us.kostenko.architecturecomponentstmdb.common.database
 
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import us.kostenko.architecturecomponentstmdb.details.model.Genre

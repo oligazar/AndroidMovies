@@ -5,6 +5,7 @@ package us.kostenko.architecturecomponentstmdb.common.di
 import android.app.Application
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import us.kostenko.architecturecomponentstmdb.common.Coroutines
 import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepository
 import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepository
 
@@ -14,7 +15,7 @@ interface Injection {
 
     fun provideOkHttpClient(cache: Cache, config: OkHttpConfigurator): OkHttpClient
 
-    fun provideMovieDetailRepository(application: Application): MovieDetailRepository
+    fun provideMovieDetailRepository(application: Application, coroutines: Coroutines): MovieDetailRepository
 
     fun provideMoviesRepository(application: Application): MoviesRepository
 }

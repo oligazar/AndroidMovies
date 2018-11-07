@@ -1,10 +1,10 @@
 package us.kostenko.architecturecomponentstmdb.common.database
 
 import android.app.Application
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.Room
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverters
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import us.kostenko.architecturecomponentstmdb.common.api.SingletonHolder
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.details.repository.persistance.DetailDao

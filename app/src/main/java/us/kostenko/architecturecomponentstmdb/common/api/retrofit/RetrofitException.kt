@@ -1,9 +1,12 @@
 package us.kostenko.architecturecomponentstmdb.common.api.retrofit
 
+import com.google.gson.Gson
 import okhttp3.ResponseBody
 import retrofit2.Converter
+import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
+import timber.log.Timber
 import java.io.IOException
 
 class RetrofitException internal constructor(message: String?,
@@ -38,18 +41,21 @@ class RetrofitException internal constructor(message: String?,
      */
     @Throws(IOException::class)
     fun <T> getErrorBodyAs(type: Class<T>): T? {
-        val errorBody = response?.errorBody()
-        if (errorBody == null || retrofit == null) {
-            return null
-        }
-        val converter: Converter<ResponseBody, T> = retrofit.responseBodyConverter(type, arrayOfNulls<Annotation>(0))
-        return converter.convert(errorBody)
+        val errorBody = response?.errorBody() ?: return null
+        val converter: Converter<ResponseBody, T>? = retrofit?.responseBodyConverter(type, arrayOfNulls<Annotation>(0))
+        return converter?.convert(errorBody) ?: convert(type, errorBody)
+    }
+
+    private fun <T> convert(type: Class<T>, errorBody: ResponseBody): T {
+        val string = errorBody.string()
+        Timber.d("errorBody: $string")
+        return Gson().fromJson(string, type)
     }
 
     companion object {
-        fun httpError(url: String, response: Response<*>, retrofit: Retrofit): RetrofitException {
+        fun httpError(url: String, response: Response<*>, retrofit: Retrofit?): RetrofitException {
             val message = response.code().toString() + " " + response.message()
-            return RetrofitException(message, url, response, Kind.HTTP, null, retrofit)
+            return RetrofitException(message, url, response, Kind.HTTP, null, null)
         }
 
         fun networkError(exception: IOException): RetrofitException {
@@ -59,5 +65,41 @@ class RetrofitException internal constructor(message: String?,
         fun unexpectedError(exception: Throwable): RetrofitException {
             return RetrofitException(exception.message, null, null, Kind.UNEXPECTED, exception, null)
         }
+    }
+
+    /**
+     *  // We don't know what happened. We need to simply convert to an unknown error
+    if (response.isSuccessful) {
+    val body = response.body()
+    if (body == null || response.code() == 204) {
+    ApiEmptyResponse()
+    } else {
+    ApiSuccessResponse(
+    body = body,
+    linkHeader = response.headers()?.get("link")
+    )
+    }
+    } else {
+    val msg = response.errorBody()?.string()
+    val errorMsg = if (msg.isNullOrEmpty()) {
+    response.message()
+    } else {
+    msg
+    }
+    ApiErrorResponse(errorMsg ?: "unknown error")
+    }
+     */
+}
+
+fun Throwable.asRetrofitException(): RetrofitException {
+    return when (this) {
+        is HttpException -> {
+            val response = response()
+            RetrofitException.httpError(response.raw().request().url().toString(), response, null)
+        }
+        is IOException   -> {
+            RetrofitException.networkError(this)
+        }
+        else             -> RetrofitException.unexpectedError(this)
     }
 }

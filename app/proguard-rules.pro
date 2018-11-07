@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#For design support library
+-keep class android.support.design.widget.** { *; }
+-keep interface android.support.design.widget.** { *; }

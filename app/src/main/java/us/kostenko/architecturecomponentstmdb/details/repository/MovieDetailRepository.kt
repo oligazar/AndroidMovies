@@ -1,41 +1,59 @@
 package us.kostenko.architecturecomponentstmdb.details.repository
 
-import android.arch.lifecycle.LiveData
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import androidx.lifecycle.LiveData
+import us.kostenko.architecturecomponentstmdb.common.Coroutines
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.details.repository.persistance.DetailDao
 import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
-import java.util.*
+import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.NetworkBoundResource
+import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.State
+import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.StateAdapter
+import java.util.Calendar
+import java.util.Date
 
-const val FRESH_TIMEOUT_MINUTES = 1
+interface MovieDetailRepository {
 
-class MovieDetailRepository(private val webService: MovieWebService,
-                            private val movieDao: DetailDao) {
+    fun getMovie(id: Int): LiveData<State<Movie>>
 
-    fun getMovie(id: Int): LiveData<Movie>  {
-        GlobalScope.launch { refreshMovie(id) }
-        return movieDao.getMovie(id)
-    }
+    fun retry(id: Int = 0)
 
-    fun like(id: Int, like: Boolean) {
-        GlobalScope.launch {
-            movieDao.like(id, like)
+    fun like(id: Int, like: Boolean)
+}
+
+class MovieDetailRepositoryImpl(private val webService: MovieWebService,
+                            private val movieDao: DetailDao,
+                            private val coroutines: Coroutines): MovieDetailRepository {
+
+    val adapter = StateAdapter<Movie>()
+    private var movieId = 0
+
+    private val movieResource by lazy {
+        object : NetworkBoundResource<Movie, Movie, State<Movie>>(coroutines, adapter) {
+
+            override fun saveResult(item: Movie) { movieDao.updateDetail(item, Date()) }
+
+            override fun shouldFetch(data: Movie?) = data?.let { it.dateUpdate < getMaxRefreshTime(Date()) } ?: true
+
+            override fun loadFromDb() = movieDao.getMovie(movieId)
+
+            override suspend fun fetchData(): Movie? = webService.getMovie(movieId).await()
+
         }
     }
 
-    private suspend fun refreshMovie(id: Int) {
-        val movieExist = movieDao.hasMovie(id, getMaxRefreshTime(Date())) != null
-        if(!movieExist) {
-            try {
-                val movie = webService.getMovie(id).await()
-                movie.dateUpdate = Date()
-                movie.apply {
-                    movieDao.updateDetail(id, title, releaseDate, posterPath, backdropPath, overview, originalLanguage, originalTitle, genres, dateUpdate)
-                }
-            } catch (e: Throwable) {
-                e.printStackTrace()
-            }
+    override fun getMovie(id: Int): LiveData<State<Movie>> {
+        movieId = id
+        return movieResource.asLiveData()
+    }
+
+    override fun retry(id: Int) {
+        movieId = if (id > 0) id else movieId
+        movieResource.reload()
+    }
+
+    override fun like(id: Int, like: Boolean) {
+        coroutines {
+            movieDao.like(id, like)
         }
     }
 

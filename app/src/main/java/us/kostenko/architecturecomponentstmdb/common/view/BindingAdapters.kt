@@ -1,7 +1,8 @@
 package us.kostenko.architecturecomponentstmdb.common.view
 
-import android.databinding.BindingAdapter
-import android.databinding.BindingConversion
+import androidx.databinding.BindingAdapter
+import androidx.databinding.BindingConversion
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import us.kostenko.architecturecomponentstmdb.R
@@ -24,3 +25,8 @@ fun setTitleDate(tv: TextView, title: String?, date: String?) {
 
 @BindingConversion
 fun genresToString(genres: ArrayList<Genre>?): String? = genres?.joinToString { it.name.toLowerCase() }
+
+@BindingAdapter("visibleGone")
+fun showHide(view: View, show: Boolean) {
+    view.visibility = if (show) View.VISIBLE else View.GONE
+}

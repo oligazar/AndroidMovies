@@ -1,10 +1,10 @@
 package us.kostenko.architecturecomponentstmdb.details.model
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import java.util.*
-
+import java.util.ArrayList
+import java.util.Date
 
 @Entity(tableName = "movies")
 data class Movie(
@@ -28,7 +28,6 @@ data class Movie(
     var liked: Boolean = false,
     var sort: Int
 )
-//@ColumnInfo(name = "first_name")
 
 data class Genre(
     var id: Int,

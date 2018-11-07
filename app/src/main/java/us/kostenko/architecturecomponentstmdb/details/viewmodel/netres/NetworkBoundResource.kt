@@ -1,14 +1,13 @@
 package us.kostenko.architecturecomponentstmdb.details.viewmodel.netres
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import android.support.annotation.MainThread
-import android.support.annotation.WorkerThread
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import timber.log.Timber
+import us.kostenko.architecturecomponentstmdb.common.Coroutines
+import us.kostenko.architecturecomponentstmdb.common.api.retrofit.asRetrofitException
+import us.kostenko.architecturecomponentstmdb.details.model.MovieError
 
 /**
  * A generic class that can provide a resource backed by both the sqlite database and the network.
@@ -19,84 +18,82 @@ import kotlinx.coroutines.experimental.withContext
  * @param <ResultType>
  * @param <RequestType>
 </RequestType></ResultType> */
-abstract class NetworkBoundResource<ResultType, RequestType>
-@MainThread constructor() {
 
-    private val result = MediatorLiveData<Resource<ResultType>>()
-    private val uiContext = Dispatchers.Main
-    private val bgContext = Dispatchers.Default
+enum class Status { SUCCESS, ERROR, LOADING }
 
-    init {
-        result.value = Resource.loading(null)
-        @Suppress("LeakingThis")
-        val dbSource = loadFromDb()
-        result.addSourceOnce(dbSource) { data ->
+interface BoundResourceAdapter<Data, Wrapper> {
+
+    fun onProgress(): Wrapper
+
+    fun onData(data: Data?): Wrapper
+
+    fun onError(exception: Exception?): Wrapper
+
+//    fun setEmpty(): Wrapper
+}
+
+open class StateAdapter<T>: BoundResourceAdapter<T, State<T>> {
+
+    private var state: State<T> = State.InitialLoading
+
+    override fun onData(data: T?): State<T> {
+        state = state.showData(data)
+        return state
+    }
+
+    override fun onError(exception: Exception?): State<T> {
+        val message = exception?.apiMessage<MovieError> { statusMessage }
+        state = state.showError(message)
+        return state
+    }
+
+    override fun onProgress(): State<T> {
+        state = state.showLoading()
+        return state
+    }
+}
+
+abstract class NetworkBoundResource<ResultType, RequestType, Wrapper>
+@MainThread constructor(private val coroutines: Coroutines, private val adapter: BoundResourceAdapter<ResultType, Wrapper>) {
+
+    private val result = MediatorLiveData<Wrapper>()
+    private lateinit var dbSource: LiveData<ResultType>
+
+    fun reload() {
+        result.value = adapter.onProgress()
+        dbSource = loadFromDb()
+        result.removeSource(source())
+
+        result.addSourceOnce(true, dbSource) { data ->
             if (shouldFetch(data)) {
-                fetchFromNetwork(dbSource)
-            } else {
-                result.addSource(dbSource) { newData ->
-                    setValue(Resource.success(newData))
-                }
+                fetchFromNetwork()
+            } else result.addSource(dbSource) { newData ->
+                setValue(adapter.onData(newData))
             }
         }
     }
 
-    fun asLiveData() = result as LiveData<Resource<ResultType>>
-
-    @MainThread
-    private fun setValue(newValue: Resource<ResultType>) {
-        if (result.value != newValue) {
-            result.value = newValue
-        }
-    }
-
-    private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {
-        val apiResponse = createCall()
-        // we re-attach dbSource as a new source, it will dispatch its latest value quickly
-        result.addSource(dbSource) { newData ->
-            setValue(Resource.loading(newData))
-        }
-        result.addSourceOnce(apiResponse) { response ->
-            result.removeSource(dbSource)
-            when (response) {
-                is ApiSuccessResponse -> {
-                    GlobalScope.launch(bgContext) {
-                        saveCallResult(processResponse(response))
-                        withContext(uiContext) {
-                            // we specially request a new live data,
-                            // otherwise we will get immediately last cached value,
-                            // which may not be updated with latest results received from network.
-                            result.addSource(loadFromDb()) { newData ->
-                                setValue(Resource.success(newData))
-                            }
-                        }
-                    }
-                }
-                is ApiEmptyResponse -> {
-                    GlobalScope.launch(uiContext) {
-                        // reload from disk whatever we had
-                        result.addSource(loadFromDb()) { newData ->
-                            setValue(Resource.success(newData))
-                        }
-                    }
-                }
-                is ApiErrorResponse -> {
-                    onFetchFailed()
-                    result.addSource(dbSource) { newData ->
-                        setValue(Resource.error(response.errorMessage, newData))
-                    }
+    private fun fetchFromNetwork() = coroutines {
+        process({
+                   result.removeSource(source())
+                   val newData = fetchData()
+                   newData?.let { saveResult(newData) }
+                }, { status, once, e ->
+            // this callback is called upon LOADING, SUCCESS or ERROR events
+            coroutines.onUi {
+                result.addSourceOnce(once, source()) { newData ->
+                    // TODO: Here might be a problem with over deconstructing the error
+                    setValue(wrapperFromParts(status, newData, e))
                 }
             }
-        }
+        })
     }
 
-    protected open fun onFetchFailed() {}
+    @Suppress("UNCHECKED_CAST")
+    fun asLiveData() = result as LiveData<Wrapper>
 
     @WorkerThread
-    protected open fun processResponse(response: ApiSuccessResponse<RequestType>) = response.body
-
-    @WorkerThread
-    protected abstract fun saveCallResult(item: RequestType)
+    protected abstract fun saveResult(item: RequestType)
 
     @MainThread
     protected abstract fun shouldFetch(data: ResultType?): Boolean
@@ -105,12 +102,48 @@ abstract class NetworkBoundResource<ResultType, RequestType>
     protected abstract fun loadFromDb(): LiveData<ResultType>
 
     @MainThread
-    protected abstract fun createCall(): LiveData<ApiResponse<RequestType>>
+    protected abstract suspend fun fetchData(): RequestType?
 
-    private fun <T, S>MediatorLiveData<T>.addSourceOnce(source: LiveData<S>, observer: (S?) -> Unit) {
-        addSource(source) { data ->
-            removeSource(source)
-            observer(data)
+    @MainThread
+    private fun setValue(newValue: Wrapper) {
+        if (result.value != newValue) {
+            result.value = newValue
         }
     }
+
+    private inline fun process(f: () -> Unit, result: (status: Status, once: Boolean, e: Exception?) -> Unit) {
+        result(Status.LOADING, true, null)
+        try {
+            f()
+            result(Status.SUCCESS, false, null)
+        } catch (e: Exception) {
+            println(e)
+            result(Status.ERROR, false, e)
+        }
+    }
+
+    private fun wrapperFromParts(status: Status, newData: ResultType?, exception: Exception?): Wrapper {
+        return when (status) {
+            Status.ERROR -> adapter.onError(exception)
+            Status.LOADING -> adapter.onProgress()
+            Status.SUCCESS -> adapter.onData(newData)
+        }
+    }
+
+    private fun source(status: Status = Status.LOADING) =
+            if (status == Status.ERROR || status == Status.LOADING) dbSource else loadFromDb()
+}
+
+fun <T, S> MediatorLiveData<T>.addSourceOnce(once: Boolean, source: LiveData<S>, observer: (S?) -> Unit) {
+    addSource(source) { data ->
+        if (once) removeSource(source)
+        observer(data)
+    }
+}
+
+inline fun <reified T>Exception.apiMessage(extractMessage: T.() -> String): String? {
+    val apiException = asRetrofitException().getErrorBodyAs(T::class.java)
+    val message =  apiException?.extractMessage() ?: message
+    Timber.d("Exception: $this, message: $message")
+    return message
 }

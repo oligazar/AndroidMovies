@@ -1,11 +1,16 @@
 package us.kostenko.architecturecomponentstmdb.master.repository.persistance
 
-import android.arch.paging.DataSource
-import android.arch.persistence.room.*
+import androidx.paging.DataSource
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
 
 @Dao
 interface MasterDao {

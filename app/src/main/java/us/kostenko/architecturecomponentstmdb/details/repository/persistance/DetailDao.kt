@@ -1,14 +1,17 @@
 package us.kostenko.architecturecomponentstmdb.details.repository.persistance
 
-import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Query
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import us.kostenko.architecturecomponentstmdb.details.model.Genre
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
-import java.util.*
+import java.util.ArrayList
+import java.util.Date
 
 @Dao
-interface DetailDao {
+abstract class DetailDao {
 
     @Query("""UPDATE movies SET title = :title,
         releaseDate = :releaseDate,
@@ -19,7 +22,7 @@ interface DetailDao {
         originalTitle = :originalTitle,
         genres = :genres,
         dateUpdate = :dateUpdate WHERE id = :id""")
-    fun updateDetail(id: Int,
+    abstract fun updateDetail(id: Int,
                      title: String,
                      releaseDate: String,
                      posterPath: String?,
@@ -30,12 +33,25 @@ interface DetailDao {
                      genres: ArrayList<Genre>?,
                      dateUpdate: Date)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract fun insertDetail(movie: Movie): Long
+
     @Query("SELECT * from movies WHERE id = :id")
-    fun getMovie(id: Int): LiveData<Movie>
+    abstract fun getMovie(id: Int): LiveData<Movie>
 
     @Query("SELECT * FROM movies WHERE id = :id AND dateUpdate > :dateUpdate LIMIT 1")
-    fun hasMovie(id: Int, dateUpdate: Date): Movie?
+    abstract fun hasMovie(id: Int, dateUpdate: Date): Movie?
 
     @Query("UPDATE movies SET liked = :isLiked WHERE id = :id")
-    fun like(id: Int, isLiked: Boolean)
+    abstract fun like(id: Int, isLiked: Boolean)
+
+    fun updateDetail(movie: Movie, date: Date) {
+        movie.apply {
+            dateUpdate = date
+            val movieExists = insertDetail(movie) < 0
+            if (movieExists) {
+                updateDetail(id, title, releaseDate, posterPath, backdropPath, overview, originalLanguage, originalTitle, genres, dateUpdate)
+            }
+        }
+    }
 }
