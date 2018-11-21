@@ -10,14 +10,18 @@ import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
 import us.kostenko.architecturecomponentstmdb.master.repository.persistance.MasterDao
 import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
-import java.util.*
+import java.util.Date
 
-class MoviesRepository(private val webService: MoviesWebService,
-                       private val masterDao: MasterDao) {
+interface MoviesRepository {
+    fun getMovies(): LiveData<PagedList<MovieItem>>
+}
+
+class MoviesRepositoryImpl(private val webService: MoviesWebService,
+                       private val masterDao: MasterDao): MoviesRepository {
 
     private lateinit var pagedList: LiveData<PagedList<MovieItem>>
 
-    fun getMovies(): LiveData<PagedList<MovieItem>> {
+    override fun getMovies(): LiveData<PagedList<MovieItem>> {
         val config = PagedList.Config.Builder()
                         .setPageSize(PAGE_SIZE)
                         .setEnablePlaceholders(true).build()

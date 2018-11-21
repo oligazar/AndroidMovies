@@ -12,6 +12,7 @@ import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepo
 import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepositoryImpl
 import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
 import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepository
+import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepositoryImpl
 import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
 
 object Injector: Injection {
@@ -36,6 +37,6 @@ object Injector: Injection {
     override fun provideMoviesRepository(application: Application): MoviesRepository {
         val webService = RetrofitManager.createService(application, MoviesWebService::class.java)
         val masterDao = MovieDatabase.instance(application).masterDao()
-        return MoviesRepository(webService, masterDao)
+        return MoviesRepositoryImpl(webService, masterDao)
     }
 }

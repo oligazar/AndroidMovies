@@ -30,7 +30,7 @@ class MovieDetailRepositoryImpl(private val webService: MovieWebService,
     private val movieResource by lazy {
         object : NetworkBoundResource<Movie, Movie, State<Movie>>(coroutines, adapter) {
 
-            override fun saveResult(item: Movie) { movieDao.updateDetail(item, Date()) }
+            override fun saveResult(item: Movie) { movieDao.updateMovie(item, Date()) }
 
             override fun shouldFetch(data: Movie?) = data?.let { it.dateUpdate < getMaxRefreshTime(Date()) } ?: true
 

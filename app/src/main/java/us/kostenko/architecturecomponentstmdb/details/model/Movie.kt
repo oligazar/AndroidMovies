@@ -3,9 +3,11 @@ package us.kostenko.architecturecomponentstmdb.details.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import us.kostenko.architecturecomponentstmdb.testing.OpenForTesting
 import java.util.ArrayList
 import java.util.Date
 
+@OpenForTesting
 @Entity(tableName = "movies")
 data class Movie(
     @PrimaryKey
