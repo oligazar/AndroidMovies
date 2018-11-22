@@ -11,15 +11,6 @@ import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.StateAdap
 import java.util.Calendar
 import java.util.Date
 
-interface MovieDetailRepository {
-
-    fun getMovie(id: Int): LiveData<State<Movie>>
-
-    fun retry(id: Int = 0)
-
-    fun like(id: Int, like: Boolean)
-}
-
 class MovieDetailRepositoryImpl(private val webService: MovieWebService,
                             private val movieDao: DetailDao,
                             private val coroutines: Coroutines): MovieDetailRepository {
@@ -27,7 +18,7 @@ class MovieDetailRepositoryImpl(private val webService: MovieWebService,
     val adapter = StateAdapter<Movie>()
     private var movieId = 0
 
-    private val movieResource by lazy {
+    private val movieResource: NetworkBoundResource<Movie, Movie, State<Movie>> by lazy {
         object : NetworkBoundResource<Movie, Movie, State<Movie>>(coroutines, adapter) {
 
             override fun saveResult(item: Movie) { movieDao.updateMovie(item, Date()) }
@@ -63,4 +54,13 @@ class MovieDetailRepositoryImpl(private val webService: MovieWebService,
         cal.add(Calendar.MINUTE, - FRESH_TIMEOUT_MINUTES)
         return cal.time
     }
+}
+
+interface MovieDetailRepository {
+
+    fun getMovie(id: Int): LiveData<State<Movie>>
+
+    fun retry(id: Int = 0)
+
+    fun like(id: Int, like: Boolean)
 }

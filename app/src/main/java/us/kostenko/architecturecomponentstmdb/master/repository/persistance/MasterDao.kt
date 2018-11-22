@@ -6,17 +6,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
 import java.util.ArrayList
 import java.util.Date
 
 @Dao
-interface MasterDao {
+abstract class MasterDao {
 
     @Query("SELECT id, title, posterPath FROM movies ORDER BY sort ASC")
-    fun getMovies(): DataSource.Factory<Int, MovieItem>
+    abstract fun getMovies(): DataSource.Factory<Int, MovieItem>
 
     @Query("""UPDATE movies SET title = :title,
         releaseDate = :releaseDate,
@@ -27,7 +26,7 @@ interface MasterDao {
         originalTitle = :originalTitle,
         dateUpdate = :dateUpdate,
         sort = :sort WHERE id = :id""")
-    fun updateMaster(id: Int,
+    abstract fun updateMaster(id: Int,
                      title: String,
                      releaseDate: String,
                      posterPath: String?,
@@ -39,24 +38,28 @@ interface MasterDao {
                      sort: Int)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun saveMaster(movie: Movie): Long
-
-    @Transaction
-    fun saveMovies(movies: ArrayList<Movie>) {
-        movies.forEach { it.run {
-            val savedId = saveMaster(it)
-            Timber.d("inserted savedId: $savedId")
-            if (savedId < 0) {
-                updateMaster(id, title, releaseDate, posterPath, backdropPath, overview, originalLanguage, originalTitle, dateUpdate, sort)
-                Timber.d("updated id: $id")
-            }
-        } }
-    }
+    abstract fun saveMaster(movie: Movie): Long
 
     /**
      * One by one Update if not succes - insert
-     *
+     * Doesn't update like
      * or insert with ignore and then update those not inserted?
      * https://codereview.stackexchange.com/
      */
+    @Transaction
+    open fun saveMovies(movies: ArrayList<Movie>, date: Date = Date()) {
+        movies.forEach {
+            updateMaster(it, date)
+        }
+    }
+
+    fun updateMaster(movie: Movie, date: Date) {
+        movie.apply {
+            dateUpdate = date
+            val movieExists = saveMaster(movie) < 0
+            if (movieExists) {
+                updateMaster(id, title, releaseDate, posterPath, backdropPath, overview, originalLanguage, originalTitle, dateUpdate, sort)
+            }
+        }
+    }
 }

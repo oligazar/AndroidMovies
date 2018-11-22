@@ -1,6 +1,6 @@
 package us.kostenko.architecturecomponentstmdb.common.di
 
-import android.app.Application
+import android.content.Context
 import us.kostenko.architecturecomponentstmdb.common.AndroidCoroutines
 import us.kostenko.architecturecomponentstmdb.common.Coroutines
 import us.kostenko.architecturecomponentstmdb.common.api.retrofit.RetrofitManager
@@ -19,27 +19,27 @@ import us.kostenko.architecturecomponentstmdb.master.repository.webservice.Movie
 
 object Injector: Injection {
 
-    override fun provideDatabase(application: Application): MovieDatabase = MovieDatabase.instance(application)
+    override fun provideDatabase(context: Context): MovieDatabase = MovieDatabase.instance(context)
 
     override fun provideCoroutines(): Coroutines = AndroidCoroutines()
 
-    override fun provideMovieWebService(application: Application): MovieWebService {
-        return RetrofitManager.createService(application, MovieWebService::class.java)
+    override fun provideMasterWebService(context: Context): MoviesWebService {
+        return RetrofitManager.createService(context, MoviesWebService::class.java)
     }
 
-    override fun provideMoviesWebService(application: Application): MoviesWebService {
-        return RetrofitManager.createService(application, MoviesWebService::class.java)
+    override fun provideDetailWebService(context: Context): MovieWebService {
+        return RetrofitManager.createService(context, MovieWebService::class.java)
     }
 
-    override fun provideMoviesRepository(application: Application): MoviesRepository {
-        val webService = provideMoviesWebService(application)
-        val masterDao = provideDatabase(application).masterDao()
+    override fun provideMoviesRepository(context: Context): MoviesRepository {
+        val webService = provideMasterWebService(context)
+        val masterDao = provideDatabase(context).masterDao()
         return MoviesRepositoryImpl(webService, masterDao)
     }
 
-    override fun provideMovieDetailRepository(application: Application): MovieDetailRepository {
-        val webService = provideMovieWebService(application)
-        val detailDao = provideDatabase(application).detailDao()
+    override fun provideMovieDetailRepository(context: Context): MovieDetailRepository {
+        val webService = provideDetailWebService(context)
+        val detailDao = provideDatabase(context).detailDao()
         val coroutines = provideCoroutines()
         return MovieDetailRepositoryImpl(webService, detailDao, coroutines)
     }

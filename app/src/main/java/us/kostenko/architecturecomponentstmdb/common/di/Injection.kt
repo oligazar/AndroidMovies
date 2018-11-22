@@ -2,20 +2,28 @@
 
 package us.kostenko.architecturecomponentstmdb.common.di
 
-import android.app.Application
-import okhttp3.Cache
+import android.content.Context
 import okhttp3.OkHttpClient
 import us.kostenko.architecturecomponentstmdb.common.Coroutines
+import us.kostenko.architecturecomponentstmdb.common.database.MovieDatabase
 import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepository
+import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
 import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepository
+import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
 
 typealias OkHttpConfigurator = OkHttpClient.Builder.() -> Unit
 
 interface Injection {
 
-    fun provideOkHttpClient(cache: Cache, config: OkHttpConfigurator): OkHttpClient
+    fun provideMoviesRepository(context: Context): MoviesRepository
 
-    fun provideMovieDetailRepository(application: Application, coroutines: Coroutines): MovieDetailRepository
+    fun provideDatabase(context: Context): MovieDatabase
 
-    fun provideMoviesRepository(application: Application): MoviesRepository
+    fun provideCoroutines(): Coroutines
+
+    fun provideMasterWebService(context: Context): MoviesWebService
+
+    fun provideDetailWebService(context: Context): MovieWebService
+
+    fun provideMovieDetailRepository(context: Context): MovieDetailRepository
 }
