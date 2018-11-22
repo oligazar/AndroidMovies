@@ -1,8 +1,8 @@
 package us.kostenko.architecturecomponentstmdb.details.repository
 
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
@@ -28,13 +28,13 @@ class MovieDetailRepositoryX(private val webService: MovieWebService,
     }
 
     private suspend fun refreshMovie(id: Int) {
-        val movieExist = movieDao.hasMovie(id, getMaxRefreshTime(Date())) != null
+        val movieExist = movieDao.getMovieByDate(id, getMaxRefreshTime(Date())) != null
         if(!movieExist) {
             try {
                 val movie = webService.getMovie(id).await()
                 movie.dateUpdate = Date()
                 movie.apply {
-                    movieDao.updateDetail(id, title, releaseDate, posterPath, backdropPath, overview, originalLanguage, originalTitle, genres, dateUpdate)
+                    movieDao.updateMovie(id, title, releaseDate, posterPath, backdropPath, overview, originalLanguage, originalTitle, genres, dateUpdate)
                 }
             } catch (e: Throwable) {
                 val exception = e as? HttpException

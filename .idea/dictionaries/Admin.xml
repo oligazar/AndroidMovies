@@ -2,6 +2,7 @@
   <dictionary name="Admin">
     <words>
       <w>coroutine</w>
+      <w>koin</w>
     </words>
   </dictionary>
 </component>

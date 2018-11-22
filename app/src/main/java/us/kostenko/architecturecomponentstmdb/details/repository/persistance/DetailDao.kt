@@ -22,35 +22,36 @@ abstract class DetailDao {
         originalTitle = :originalTitle,
         genres = :genres,
         dateUpdate = :dateUpdate WHERE id = :id""")
-    abstract fun updateDetail(id: Int,
-                     title: String,
-                     releaseDate: String,
-                     posterPath: String?,
-                     backdropPath: String?,
-                     overview: String,
-                     originalLanguage: String,
-                     originalTitle: String,
-                     genres: ArrayList<Genre>?,
-                     dateUpdate: Date)
+    abstract fun updateMovie(id: Int,
+                             title: String,
+                             releaseDate: String,
+                             posterPath: String?,
+                             backdropPath: String?,
+                             overview: String,
+                             originalLanguage: String,
+                             originalTitle: String,
+                             genres: ArrayList<Genre>?,
+                             dateUpdate: Date)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertDetail(movie: Movie): Long
+    abstract fun saveMovie(movie: Movie): Long
 
     @Query("SELECT * from movies WHERE id = :id")
     abstract fun getMovie(id: Int): LiveData<Movie>
 
     @Query("SELECT * FROM movies WHERE id = :id AND dateUpdate > :dateUpdate LIMIT 1")
-    abstract fun hasMovie(id: Int, dateUpdate: Date): Movie?
+    abstract fun getMovieByDate(id: Int, dateUpdate: Date): Movie?
 
     @Query("UPDATE movies SET liked = :isLiked WHERE id = :id")
     abstract fun like(id: Int, isLiked: Boolean)
 
-    fun updateDetail(movie: Movie, date: Date) {
+    /* Doesn't update like and sort fields */
+    fun updateMovie(movie: Movie, date: Date) {
         movie.apply {
             dateUpdate = date
-            val movieExists = insertDetail(movie) < 0
+            val movieExists = saveMovie(movie) < 0
             if (movieExists) {
-                updateDetail(id, title, releaseDate, posterPath, backdropPath, overview, originalLanguage, originalTitle, genres, dateUpdate)
+                updateMovie(id, title, releaseDate, posterPath, backdropPath, overview, originalLanguage, originalTitle, genres, dateUpdate)
             }
         }
     }

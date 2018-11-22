@@ -10,12 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_movie_detail.progress
 import kotlinx.android.synthetic.main.fragment_movie_detail.toolbar
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.R
-import us.kostenko.architecturecomponentstmdb.common.AndroidCoroutines
-import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
-import us.kostenko.architecturecomponentstmdb.common.utils.viewModelProvider
 import us.kostenko.architecturecomponentstmdb.common.utils.visibility
 import us.kostenko.architecturecomponentstmdb.common.view.FragmentCreator
 import us.kostenko.architecturecomponentstmdb.common.view.StateContainer
@@ -35,10 +33,8 @@ class MovieDetailFragment: Fragment() {
 
     private lateinit var binding: FragmentMovieDetailBinding
     private lateinit var stateContainer: StateContainer
-    private val viewModel by viewModelProvider {
-        val coroutines = AndroidCoroutines()
-        val repo = Injector.provideMovieDetailRepository(requireActivity().application, coroutines)
-        MovieDetailViewModel(coroutines, repo, param) }
+
+    private val viewModel: MovieDetailViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -60,12 +56,13 @@ class MovieDetailFragment: Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        retry()
+
         binding.viewModel = viewModel
         viewModel.movie.observe(this, Observer { state ->
             handleState(state)
             Timber.d("state: $state")
         })
-
     }
 
     private fun handleState(state: State<Movie>?) {
@@ -94,7 +91,7 @@ class MovieDetailFragment: Fragment() {
 
     private fun retry() {
         Timber.d("Retry clicked")
-        viewModel.retry()
+            viewModel.retry(param)
     }
 
     private fun showError(message: String) {
@@ -103,7 +100,7 @@ class MovieDetailFragment: Fragment() {
                 .setMessage(message)
                 .setPositiveButton(R.string.dialog_btn_retry) { _, _ ->
                     retry()
-                    Timber.d("btn retry clicked")
+                    Timber.d("btn reload clicked")
                 }
                 .setNegativeButton(R.string.dialog_btn_close) { _, _ ->
                     Timber.d("btn close clicked")

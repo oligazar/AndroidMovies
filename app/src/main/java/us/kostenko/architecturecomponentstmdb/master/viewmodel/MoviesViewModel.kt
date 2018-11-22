@@ -1,16 +1,14 @@
 package us.kostenko.architecturecomponentstmdb.master.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
-import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
 import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepository
+import us.kostenko.architecturecomponentstmdb.testing.OpenForTesting
 
-class MoviesViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repo: MoviesRepository by lazy { Injector.provideMoviesRepository(application) }
+@OpenForTesting
+class MoviesViewModel(private val repo: MoviesRepository): ViewModel() {
 
     val movies: LiveData<PagedList<MovieItem>> by lazy { repo.getMovies() }
 }

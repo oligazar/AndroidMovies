@@ -1,6 +1,6 @@
 package us.kostenko.architecturecomponentstmdb.details.repository.webservice
 
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

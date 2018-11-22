@@ -16,8 +16,8 @@ package us.kostenko.architecturecomponentstmdb.common.api.retrofit
  * limitations under the License.
  */
 
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import retrofit2.*
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type

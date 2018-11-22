@@ -25,12 +25,13 @@ class MovieDetailViewModelTest {
 
     @Before
     fun setup() {
-        movieDetailVM = MovieDetailViewModel(coroutines, repo, MOVIE_ID)
+        movieDetailVM = MovieDetailViewModel(coroutines, repo)
     }
 
     @Test
     fun `get movie calls repo_getMovie`() {
         movieDetailVM.movie.observeForever { }
+        movieDetailVM.retry(MOVIE_ID)
 
         verify(repo).getMovie(MOVIE_ID)
     }
@@ -45,7 +46,8 @@ class MovieDetailViewModelTest {
     @Test
     fun `retry calls repo_getMovie`() {
         movieDetailVM.movie.observeForever { }
-        movieDetailVM.retry()
+        movieDetailVM.retry(MOVIE_ID)
+        movieDetailVM.retry(MOVIE_ID)
 
         verify(repo, times(2)).getMovie(MOVIE_ID)
     }

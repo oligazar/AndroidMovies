@@ -1,4 +1,4 @@
-package us.kostenko.architecturecomponentstmdb
+package us.kostenko.architecturecomponentstmdb.details.repository
 
 import org.junit.Test
 import us.kostenko.architecturecomponentstmdb.common.view.Event

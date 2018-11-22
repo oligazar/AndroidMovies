@@ -2,11 +2,11 @@ package us.kostenko.architecturecomponentstmdb.android
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.common.utils.inTransaction
-import us.kostenko.architecturecomponentstmdb.common.view.create
-import us.kostenko.architecturecomponentstmdb.details.view.MovieDetailFragment
+import us.kostenko.architecturecomponentstmdb.master.view.MoviesFragment
 
 class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
 
@@ -17,11 +17,15 @@ class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedList
         supportFragmentManager.addOnBackStackChangedListener(this)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.inTransaction {
-                replace(R.id.container, MovieDetailFragment.create(1/*MOVIE_ID*/))
-//                replace(R.id.container, MoviesFragment())
-                addToBackStack(null)
-            }
+//            setFragment(MovieDetailFragment.create(MOVIE_ID))
+            setFragment(MoviesFragment())
+        }
+    }
+
+    fun setFragment(fragment: Fragment) {
+        supportFragmentManager.inTransaction {
+            replace(R.id.container, fragment)
+            addToBackStack(null)
         }
     }
 

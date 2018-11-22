@@ -1,6 +1,6 @@
 package us.kostenko.architecturecomponentstmdb.common.database
 
-import android.app.Application
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -17,8 +17,8 @@ abstract class MovieDatabase: RoomDatabase() {
     abstract fun detailDao(): DetailDao
     abstract fun masterDao(): MasterDao
 
-    companion object: SingletonHolder<Application, MovieDatabase>({ application ->
-              Room.databaseBuilder(application, MovieDatabase::class.java, "movies-db")
+    companion object: SingletonHolder<Context, MovieDatabase>({ context ->
+              Room.databaseBuilder(context, MovieDatabase::class.java, "movies-db")
                       .fallbackToDestructiveMigration().build() })
 }
 

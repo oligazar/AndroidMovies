@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.fragment_movies.recycler
 import kotlinx.android.synthetic.main.fragment_movies.toolbar
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
 import us.kostenko.architecturecomponentstmdb.common.utils.inTransaction
-import us.kostenko.architecturecomponentstmdb.common.utils.viewModelProvider
 import us.kostenko.architecturecomponentstmdb.common.view.GridItemDecorator
 import us.kostenko.architecturecomponentstmdb.common.view.create
 import us.kostenko.architecturecomponentstmdb.details.view.MovieDetailFragment
@@ -23,7 +23,6 @@ import us.kostenko.architecturecomponentstmdb.master.view.adapter.MoviesAdapter
 import us.kostenko.architecturecomponentstmdb.master.viewmodel.MovieItemViewModel
 import us.kostenko.architecturecomponentstmdb.master.viewmodel.MoviesViewModel
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MoviesFragment#newInstance} factory method to
@@ -31,8 +30,8 @@ import us.kostenko.architecturecomponentstmdb.master.viewmodel.MoviesViewModel
  */
 class MoviesFragment : Fragment() {
 
-    private val viewModel by viewModelProvider { MoviesViewModel(activity!!.application) }
-    private val itemViewModel by viewModelProvider { MovieItemViewModel() }
+    private val moviesViewModel: MoviesViewModel by viewModel()
+    private val itemViewModel: MovieItemViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -51,7 +50,7 @@ class MoviesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         val movieAdapter = MoviesAdapter(MovieDiffUtilCallback(), itemViewModel)
-        viewModel.movies.observe(this, Observer { movies ->
+        moviesViewModel.movies.observe(this, Observer { movies ->
             movieAdapter.submitList(movies)
         })
         recycler.apply {

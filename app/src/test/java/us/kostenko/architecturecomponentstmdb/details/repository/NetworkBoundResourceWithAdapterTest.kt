@@ -1,4 +1,4 @@
-package us.kostenko.architecturecomponentstmdb
+package us.kostenko.architecturecomponentstmdb.details.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
@@ -19,7 +19,6 @@ import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.NetworkBo
 import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.State
 import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.StateAdapter
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.experimental.buildSequence
 import kotlin.properties.Delegates.observable
 
 class NetworkBoundResourceWithAdapterTest {
@@ -35,7 +34,7 @@ class NetworkBoundResourceWithAdapterTest {
     }
 
     private lateinit var internetIterator: Iterator<Foo?>
-    private var internetSequence by observable<Sequence<Foo?>>(emptySequence()) { _, _, new -> internetIterator = new.iterator() }
+    private var internetValues by observable<Sequence<Foo?>>(emptySequence()) { _, _, new -> internetIterator = new.iterator() }
 
     private val saved = AtomicReference<Foo>()
     private val states = mutableListOf<State<Foo>>()
@@ -53,7 +52,8 @@ class NetworkBoundResourceWithAdapterTest {
     @Test
     fun `db not empty success from network`() {
         // arrange
-        internetSequence = sequenceOf(FOO_2)
+        internetValues = sequenceOf(
+                FOO_2)
         dbData.value = FOO_1
 
         // act
@@ -70,7 +70,7 @@ class NetworkBoundResourceWithAdapterTest {
 
     @Test
     fun `db empty success from network`() {
-        internetSequence = buildSequence {
+        internetValues = sequence {
             yield(FOO_1)
             yield(FOO_2)
         }
@@ -89,7 +89,7 @@ class NetworkBoundResourceWithAdapterTest {
     @Test
     fun `db empty error from network`() {
 
-        internetSequence = buildSequence {
+        internetValues = sequence {
             yield(FOO_RELOAD)
             yield(FOO_EXCEPTION)
             yield(FOO_1)
@@ -111,7 +111,7 @@ class NetworkBoundResourceWithAdapterTest {
     @Test
     fun `db empty first error from network`() {
 
-        internetSequence = buildSequence {
+        internetValues = sequence {
             yield(FOO_EXCEPTION)
             yield(FOO_RELOAD)
             yield(FOO_EXCEPTION)
@@ -148,7 +148,8 @@ class NetworkBoundResourceWithAdapterTest {
     companion object {
         private const val ERROR_MESSAGE = "errorMessage"
         private val BODY = ResponseBody.create(MediaType.parse("application/json"), "{\"status_code\":34,\"status_message\":\"$ERROR_MESSAGE\"}")
-        private val EXCEPTION = HttpException(Response.error<Foo>(400, BODY))
+        private val EXCEPTION = HttpException(Response.error<Foo>(400,
+                                                                                                                            BODY))
         private val FOO_EXCEPTION = Foo(-1)
         private val FOO_RELOAD = Foo(0)
         private val FOO_1 = Foo(1)
@@ -168,11 +169,13 @@ class StateTester(private val invocation: Int, private val list: List<State<Foo>
         assertThat("More invocations than expected, current invocation: $invocation, class: $clazz", list.isNotEmpty())
         assertk.assert(list[0], "invocation: $invocation").isInstanceOf(clazz)
 
-        return StateTester(invocation + 1, list.subList(1, list.size))
+        return StateTester(invocation + 1,
+                                                                                     list.subList(1, list.size))
     }
 }
 
-infix fun List<State<Foo>>.shouldContain(f: StateTester.() -> Unit) = StateTester(1,this).f()
+infix fun List<State<Foo>>.shouldContain(f: StateTester.() -> Unit) = StateTester(
+        1, this).f()
 
 inline fun <T> T.inOrder(block: InOrderOnType<T>.() -> Unit) {
     block.invoke(InOrderOnType(this))

@@ -1,127 +1,85 @@
 package us.kostenko.architecturecomponentstmdb.common.test
 
-import android.location.Location
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.ReceiveChannel
-import kotlinx.coroutines.experimental.channels.SendChannel
-import kotlinx.coroutines.experimental.coroutineScope
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.selects.select
-import kotlin.coroutines.experimental.CoroutineContext
+import android.content.Context
+import android.content.SharedPreferences
+import us.kostenko.architecturecomponentstmdb.common.test.Rank.SEVEN
+import us.kostenko.architecturecomponentstmdb.common.test.Suit.DIAMONDS
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
-data class Reference(val name: String) {
-    fun resolveLocation() = Location("provider")
-}
+// delegates
+// observable property
 
-data class LocContent(val location: Location, val content: Content)
+abstract class ObservableProperty<T>(initialValue: T): ReadWriteProperty<Any?, T> {
+    private var value = initialValue
 
-data class Content(val name: String)
+    /**
+     * If the callback returns `true` the value of the property is being set to the new value
+     * and if the callback returns `false` the new value is declared.
+     */
 
-class SomethingWithLifecycle: CoroutineScope {
+    protected open fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T): Boolean = true
 
-    private val job = Job()
+    protected open fun afterChange(property: KProperty<*>, oldValue: T, newValue: T) {}
 
-    fun onClose() { job.cancel() }
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
-
-    fun doSomething() {
-        val references = Channel<Reference>()
-        processReferences(references)
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        val oldValue = this.value
+        if (!beforeChange(property, oldValue, value)) { return }
+        this.value = value
+        afterChange(property, oldValue, value)
     }
+
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T = value
 }
 
-/**
- * Suspedned function - doesn't return until the job is done
- * CoroutineScope extension function returns immediately and launches background coroutine in the scope
- */
-suspend fun downloadContent(location: Location): Content = Content("content")
+// SharedPreferences delegate
+abstract class SharedPrefDelegate<T>(context: Context, val key: String, val defaultValue: T) {
+    val prefs: SharedPreferences by lazy { context.getSharedPreferences("prefName", Context.MODE_PRIVATE) }
 
-const val N_WORKERS = 5
+    /**
+     * If the callback returns `true` the value of the property is being set to the new value
+     * and if the callback returns `false` the new value is declared.
+     */
 
-fun CoroutineScope.processReferences(
-        references: ReceiveChannel<Reference>
-) { // communication primitives
-    val locations = Channel<Location>()
-    val contents = Channel<LocContent>()
-    repeat(N_WORKERS) { worker(locations, contents) }
-    downloader(references, locations, contents)
-}
+    protected open fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T): Boolean = true
 
-/**
- * Worker pool
- */
-fun CoroutineScope.worker(
-        locations: ReceiveChannel<Location>,
-        contents: SendChannel<LocContent>
-) = launch {
-    // fan-out fashion (по одному на каждый worker)
-    for (loc in locations) {
-        val content = downloadContent(loc)
-        contents.send(LocContent(loc, content))
-    }
-}
+    protected open fun afterChange(property: KProperty<*>, oldValue: T, newValue: T) {}
 
-/**
- * Creates downloader
- * It is CONVENTION to make a function extend CoroutineScope if you need to laouch() inside it
- */
-fun CoroutineScope.downloader(
-        references: ReceiveChannel<Reference>,
-        locations: SendChannel<Location>,
-        contents: ReceiveChannel<LocContent>
-) = launch {
-        val requested = mutableMapOf<Location, MutableList<Reference>>()
-        while (true) {
-            select<Unit> {
-                references.onReceive { ref ->
-                    val loc = ref.resolveLocation()
-                    val refs = requested[loc]
-                    if (refs == null) {
-                        requested[loc] = mutableListOf(ref)
-                        locations.send(loc)
-                    } else {
-                        refs.add(ref)
-                    }
-                }
-                contents.onReceive { (loc, content) ->
-                    val refs = requested.remove(loc)!!
-                    for (ref in refs) {
-                        processContent(ref, content)
-                    }
-                }
-            }
+    @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T = with(prefs)  {
+        when (defaultValue) {
+            is Boolean -> getBoolean(key, defaultValue)
+            is Int -> getInt(key, defaultValue)
+            is String -> getString(key, defaultValue)
+            else -> throw IllegalArgumentException()
         }
-    }
+    } as T
 
-fun processContent(reference: Reference, content: Content) { }
-
-
-suspend fun processReferences(refs: List<Reference>) = coroutineScope {
-    for (ref in refs) {
-        val location = ref.resolveLocation()
-        launch {
-            val content = downloadContent(location)
-            processContent(ref, content)
-        }
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) = with(prefs.edit()) {
+        when (value) {
+            is Boolean -> putBoolean(key, value)
+            is Int -> putInt(key, value)
+            is String -> putString(key, value)
+            else -> throw IllegalArgumentException()
+        }.apply()
     }
 }
 
-//fun CoroutineScope.downloader(
-//        references: ReceiveChannel<Reference>,
-//        locations: SendChannel<Location>,
-//        contents:
-//) = launch {
-//    val requested = mutableSetOf<Location>()
-//    for (ref in references) {
-//        val location = ref.resolveLocation()
-//        if (requested.add(location)) {
-//            locations.send(location)
-//        }
-//    }
-//}
+// infix function
+
+enum class Suit {
+    HEARTS, SPADES, CLUBS, DIAMONDS
+}
+
+enum class Rank {
+    TWO, THREE, FOUR, FIVE,
+    SIX, SEVEN, EIGHT, NINE,
+    TEN, JACK, QUEEN, KING, ACE;
+
+    infix fun of(suit: Suit) = Card(this, suit)
+}
+
+data class Card(val rank: Rank, val suit: Suit)
+
+// usage
+val card = SEVEN of DIAMONDS

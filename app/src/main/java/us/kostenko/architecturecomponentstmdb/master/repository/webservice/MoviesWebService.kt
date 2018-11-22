@@ -1,6 +1,6 @@
 package us.kostenko.architecturecomponentstmdb.master.repository.webservice
 
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Query
 import us.kostenko.architecturecomponentstmdb.common.api.API_KEY

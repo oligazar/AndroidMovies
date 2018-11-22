@@ -4,7 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.common.view.Event
+import us.kostenko.architecturecomponentstmdb.testing.OpenForTesting
 
+@OpenForTesting
 class MovieItemViewModel: ViewModel() {
 
     val showDetails = MutableLiveData<Event<Int>>()

@@ -1,16 +1,15 @@
 package us.kostenko.architecturecomponentstmdb.common
 
 import android.os.AsyncTask
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.Main
-import kotlinx.coroutines.experimental.asCoroutineDispatcher
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newSingleThreadContext
-import kotlinx.coroutines.experimental.runBlocking
-import kotlinx.coroutines.experimental.withContext
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newFixedThreadPoolContext
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -77,7 +76,7 @@ class NewTestCoroutines : Coroutines, CoroutineScope {
     }
 
     override suspend fun onUi(f: suspend CoroutineScope.() -> Unit) {
-        withContext(newSingleThreadContext("Main single thread"), block = f)
+        withContext(newFixedThreadPoolContext(1,"Main single thread"), block = f)
     }
 }
 
