@@ -17,7 +17,7 @@ object Injector: Injection() {
 
     override fun provideCoroutines(): Coroutines = AndroidCoroutines()
 
-    override fun provideDatab1ase(context: Context): MovieDatabase = MovieDatabase.instance(context)
+    override fun provideDatabase(context: Context): MovieDatabase = MovieDatabase.instance(context)
 
     override fun provideMasterWebService(context: Context): MoviesWebService {
         return RetrofitManager.createService(context, MoviesWebService::class.java)

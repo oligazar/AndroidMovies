@@ -46,7 +46,6 @@ android {
 
 dependencies {
     def androidx_version = "1.0.0"
-    def koin_version = "1.0.2"
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -86,7 +85,6 @@ dependencies {
     testImplementation 'androidx.room:room-testing:2.1.0-alpha02'
     testImplementation 'com.google.truth:truth:0.42'
     testImplementation 'androidx.arch.core:core-testing:2.0.0'
-    testImplementation "org.koin:koin-test:$koin_version"
     androidTestImplementation 'androidx.test:core:1.0.0'
     androidTestImplementation 'androidx.arch.core:core-testing:2.0.0'
     androidTestImplementation 'androidx.test:runner:1.1.0'
@@ -99,19 +97,8 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:1.0.0"
     androidTestImplementation 'org.mockito:mockito-android:2.23.0'
     androidTestImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0'
-//    androidTestImplementation "org.koin:koin-test:$koin_version"
-    androidTestImplementation ("org.koin:koin-test:$koin_version") { exclude group: 'org.mockito' }
 
-    // Koin for Kotlin
-//    implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-core:$koin_version"
-    // Koin extended & experimental features
-    implementation "org.koin:koin-core-ext:$koin_version"
-    implementation "org.koin:koin-androidx-scope:$koin_version"
-    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-    // Koin for Unit tests
-
-    kapt "androidx.room:room-compiler:2.1.0-alpha01"
+    kapt "androidx.room:room-compiler:2.1.0-alpha02"
     kapt "androidx.lifecycle:lifecycle-compiler:2.0.0"
     //    kapt "androidx.databinding:databinding-compiler:3.2.1"
     kapt group: 'androidx.databinding', name: 'compiler', version: '3.2.0-alpha11'
