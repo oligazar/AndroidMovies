@@ -2,9 +2,11 @@ package us.kostenko.architecturecomponentstmdb.android
 
 import android.util.Log
 import android.util.Log.INFO
+import android.util.Log.WARN
+import com.crashlytics.android.Crashlytics
 import timber.log.Timber
 
-object ConcreteTimberInitializer: TimberInitializer {
+object TimberInitializerImpl: TimberInitializer {
 
     override fun init() {
         Timber.plant(CrashReportingTree())
@@ -17,13 +19,13 @@ object ConcreteTimberInitializer: TimberInitializer {
                 return
             }
 
-            FakeCrashLibrary.log(priority, tag, message)
+            Crashlytics.log(priority, tag, message)
 
             if (t != null) {
                 if (priority == Log.ERROR) {
-                    FakeCrashLibrary.logError(t)
+                    Crashlytics.logException(t)
                 } else if (priority == Log.WARN) {
-                    FakeCrashLibrary.logWarning(t)
+                    Crashlytics.log(WARN, tag, t.message)
                 }
             }
         }

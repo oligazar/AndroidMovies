@@ -6,7 +6,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Converter
 import retrofit2.Retrofit
-import us.kostenko.architecturecomponentstmdb.android.ConcreteStethoInitializer
+import us.kostenko.architecturecomponentstmdb.android.StethoInitializerImpl
 import us.kostenko.architecturecomponentstmdb.common.api.retrofit.CookieJarManager
 import us.kostenko.architecturecomponentstmdb.common.api.retrofit.CoroutineCallAdapterFactory
 import us.kostenko.architecturecomponentstmdb.common.api.retrofit.RetrofitBuilder
@@ -24,7 +24,7 @@ class TmdbRetrofitBuilder(private val context: Context): RetrofitBuilder() {
         client(buildOkHttpClient(context.getCache()))
     }
 
-    override fun buildOkHttpClient(cache: Cache): OkHttpClient = ConcreteStethoInitializer.provideOkHttpClient(cache) {
+    override fun buildOkHttpClient(cache: Cache): OkHttpClient = StethoInitializerImpl.provideOkHttpClient(cache) {
         connectTimeout(30, TimeUnit.SECONDS) // connect timeout
         readTimeout(30, TimeUnit.SECONDS)
         cookieJar(CookieJarManager.instance(context))

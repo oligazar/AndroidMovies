@@ -11,8 +11,8 @@ class MyApp: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        ConcreteTimberInitializer.init()
-        ConcreteStethoInitializer.init(this)
+        TimberInitializerImpl.init()
+        StethoInitializerImpl.init(this)
         Fabric.with(this, Crashlytics())
 
         startKoin(this, onlineAppModules)

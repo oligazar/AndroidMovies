@@ -2,7 +2,7 @@ package us.kostenko.architecturecomponentstmdb.android
 
 import timber.log.Timber
 
-object ConcreteTimberInitializer: TimberInitializer {
+object TimberInitializerImpl: TimberInitializer {
 
     override fun init() {
         Timber.plant(object: Timber.DebugTree() {

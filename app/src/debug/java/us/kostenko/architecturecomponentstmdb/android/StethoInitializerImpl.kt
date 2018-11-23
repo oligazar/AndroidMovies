@@ -9,7 +9,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.common.di.OkHttpConfigurator
 
-object ConcreteStethoInitializer: StethoInitializer {
+object StethoInitializerImpl: StethoInitializer {
 
     override fun init(application: Application) {
         Stetho.initialize(
