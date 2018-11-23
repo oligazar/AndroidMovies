@@ -10,10 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_movie_detail.progress
 import kotlinx.android.synthetic.main.fragment_movie_detail.toolbar
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import us.kostenko.architecturecomponentstmdb.R
+import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
+import us.kostenko.architecturecomponentstmdb.common.utils.viewModelProvider
 import us.kostenko.architecturecomponentstmdb.common.utils.visibility
 import us.kostenko.architecturecomponentstmdb.common.view.FragmentCreator
 import us.kostenko.architecturecomponentstmdb.common.view.StateContainer
@@ -29,12 +30,14 @@ import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.State
  * create an instance of this fragment.
  * lyfecycle owner for fragment:  https://medium.com/@BladeCoder/architecture-components-pitfalls-part-1-9300dd969808
  */
+
 class MovieDetailFragment: Fragment() {
 
     private lateinit var binding: FragmentMovieDetailBinding
     private lateinit var stateContainer: StateContainer
 
-    private val viewModel: MovieDetailViewModel by viewModel()
+    var factory: () -> MovieDetailViewModel = { Injector.movieDetailViewModel(requireContext()) }
+    private val viewModel: MovieDetailViewModel by viewModelProvider { factory() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -115,5 +118,5 @@ class MovieDetailFragment: Fragment() {
                 .show()
     }
 
-    companion object: FragmentCreator<Int>(::MovieDetailFragment)
+    companion  object: FragmentCreator<Int>(::MovieDetailFragment)
 }

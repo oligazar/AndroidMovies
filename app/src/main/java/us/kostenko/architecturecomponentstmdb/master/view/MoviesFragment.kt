@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.fragment_movies.recycler
 import kotlinx.android.synthetic.main.fragment_movies.toolbar
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import us.kostenko.architecturecomponentstmdb.R
+import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
 import us.kostenko.architecturecomponentstmdb.common.utils.inTransaction
+import us.kostenko.architecturecomponentstmdb.common.utils.viewModelProvider
 import us.kostenko.architecturecomponentstmdb.common.view.GridItemDecorator
 import us.kostenko.architecturecomponentstmdb.common.view.create
 import us.kostenko.architecturecomponentstmdb.details.view.MovieDetailFragment
@@ -30,8 +31,10 @@ import us.kostenko.architecturecomponentstmdb.master.viewmodel.MoviesViewModel
  */
 class MoviesFragment : Fragment() {
 
-    private val moviesViewModel: MoviesViewModel by viewModel()
-    private val itemViewModel: MovieItemViewModel by viewModel()
+    var moviesVmFactory: () -> MoviesViewModel = { Injector.moviesViewModel(requireContext()) }
+    var itemVmFactory: () -> MovieItemViewModel = { Injector.itemViewModel() }
+    private val moviesViewModel: MoviesViewModel by viewModelProvider { moviesVmFactory() }
+    private val itemViewModel: MovieItemViewModel by viewModelProvider { itemVmFactory() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

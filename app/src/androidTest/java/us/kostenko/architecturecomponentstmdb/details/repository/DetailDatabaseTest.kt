@@ -16,6 +16,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import us.kostenko.architecturecomponentstmdb.common.database.MovieDatabase
 import us.kostenko.architecturecomponentstmdb.common.di.Injector
+import us.kostenko.architecturecomponentstmdb.common.di.buildMovie
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.details.repository.persistance.DetailDao
 import java.util.Date
@@ -90,12 +91,3 @@ class DetailDatabaseTest {
         assertEquals(captor.value, resultMovie)
     }
 }
-
-fun buildMovie(id: Int,
-                       liked: Boolean = false,
-                       sort: Int = 1,
-                       prefix: String = "",
-                       dateUpdate: Date = Date()) =
-        Movie(id, "${prefix}Title", "${prefix}Date", "${prefix}poster", "${prefix}backdrop",
-              "${prefix}overview", "${prefix}eng", "${prefix}origTitle",
-              null, dateUpdate, liked, sort)

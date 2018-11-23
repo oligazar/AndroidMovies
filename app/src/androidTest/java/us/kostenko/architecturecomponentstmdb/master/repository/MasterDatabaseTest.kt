@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.test.core.app.ApplicationProvider
+import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
@@ -13,7 +14,6 @@ import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.koin.test.KoinTest
-import org.mockito.ArgumentCaptor
 import us.kostenko.architecturecomponentstmdb.common.database.MovieDatabase
 import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
@@ -24,8 +24,6 @@ import us.kostenko.architecturecomponentstmdb.master.repository.persistance.Mast
 import java.util.Date
 
 class MasterDatabaseTest: KoinTest {
-
-    inline fun <reified T : Any> argumentCaptor() = ArgumentCaptor.forClass(T::class.java)
 
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
     private val movieDatabase: MovieDatabase = Injector.provideDatabase(ApplicationProvider.getApplicationContext())
@@ -48,7 +46,7 @@ class MasterDatabaseTest: KoinTest {
         pagedList.observeForever(observer)
 
         verify(observer).onChanged(captor.capture())
-        Assert.assertEquals(listOf(buildMovieItem(1)), captor.value)
+        Assert.assertEquals(listOf(buildMovieItem(1)), captor.lastValue)
     }
 
     @Test
@@ -69,7 +67,7 @@ class MasterDatabaseTest: KoinTest {
         masterDAO.updateMaster(updateMovie, dateUpdate)
 
         verify(observer, times(3)).onChanged(captor.capture())
-        Assert.assertEquals(captor.value, listOf(resultMovieItem))
+        Assert.assertEquals(captor.lastValue, listOf(resultMovieItem))
     }
 
     @Test

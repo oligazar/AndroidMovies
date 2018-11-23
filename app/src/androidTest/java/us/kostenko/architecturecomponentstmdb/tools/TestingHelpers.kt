@@ -20,12 +20,12 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.TypeSafeMatcher
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.BDDMockito
 
 
 fun <T> mockPagedList(list: List<T>): PagedList<T> = mock {
-    on { get(ArgumentMatchers.anyInt()) } doAnswer { invocation ->
+    on { get(anyInt()) } doAnswer { invocation ->
         val index = invocation.arguments.first() as Int
         list[index]
     }
