@@ -7,6 +7,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.filters.LargeTest
 import com.nhaarman.mockitokotlin2.mock
 import org.junit.Before
 import org.junit.Rule
@@ -20,6 +21,8 @@ import us.kostenko.architecturecomponentstmdb.master.repository.webservice.Movie
 import us.kostenko.architecturecomponentstmdb.tools.FragmentTestRule
 import us.kostenko.architecturecomponentstmdb.tools.withItemText
 
+
+@LargeTest
 class NavigationTest {
 
     @get:Rule val fragmentRule = FragmentTestRule()

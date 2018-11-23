@@ -16,8 +16,8 @@ import org.junit.Test
 import org.koin.test.KoinTest
 import us.kostenko.architecturecomponentstmdb.common.database.MovieDatabase
 import us.kostenko.architecturecomponentstmdb.common.di.Injector
+import us.kostenko.architecturecomponentstmdb.common.di.buildMovie
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
-import us.kostenko.architecturecomponentstmdb.details.repository.buildMovie
 import us.kostenko.architecturecomponentstmdb.details.repository.persistance.DetailDao
 import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
 import us.kostenko.architecturecomponentstmdb.master.repository.persistance.MasterDao

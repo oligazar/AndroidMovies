@@ -5,7 +5,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -13,7 +12,6 @@ import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.common.di.buildMovie
 import us.kostenko.architecturecomponentstmdb.common.view.create
@@ -23,7 +21,6 @@ import us.kostenko.architecturecomponentstmdb.tools.FragmentTestRule
 
 
 @LargeTest
-@RunWith(AndroidJUnit4::class)
 class MovieDetailFragmentTest {
 
     private val movieLD = MutableLiveData<State<Movie>>()
