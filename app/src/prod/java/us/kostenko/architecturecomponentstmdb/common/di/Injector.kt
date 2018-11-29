@@ -6,7 +6,7 @@ import us.kostenko.architecturecomponentstmdb.common.Coroutines
 import us.kostenko.architecturecomponentstmdb.common.api.retrofit.RetrofitManager
 import us.kostenko.architecturecomponentstmdb.common.database.MovieDatabase
 import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
-import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebService
+import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebApi
 
 
 /**
@@ -19,8 +19,8 @@ object Injector: Injection() {
 
     override fun provideDatabase(context: Context): MovieDatabase = MovieDatabase.instance(context)
 
-    override fun provideMasterWebService(context: Context): MoviesWebService {
-        return RetrofitManager.createService(context, MoviesWebService::class.java)
+    override fun provideMasterWebService(context: Context): MoviesWebApi {
+        return RetrofitManager.createService(context, MoviesWebApi::class.java)
     }
 
     override fun provideDetailWebService(context: Context): MovieWebService {

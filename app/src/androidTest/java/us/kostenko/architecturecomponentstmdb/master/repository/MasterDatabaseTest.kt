@@ -13,7 +13,6 @@ import org.junit.After
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import org.koin.test.KoinTest
 import us.kostenko.architecturecomponentstmdb.common.database.MovieDatabase
 import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.common.di.buildMovie
@@ -23,7 +22,7 @@ import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
 import us.kostenko.architecturecomponentstmdb.master.repository.persistance.MasterDao
 import java.util.Date
 
-class MasterDatabaseTest: KoinTest {
+class MasterDatabaseTest {
 
     @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
     private val movieDatabase: MovieDatabase = Injector.provideDatabase(ApplicationProvider.getApplicationContext())

@@ -24,9 +24,9 @@ object Injector: Injection() {
     override fun provideCoroutines(): Coroutines = TestCoroutines()
 
     override fun provideDatabase(context: Context): MovieDatabase {
-        return Room.inMemoryDatabaseBuilder(context, MovieDatabase::class.java)
+        return lazy { Room.inMemoryDatabaseBuilder(context, MovieDatabase::class.java)
                 .allowMainThreadQueries()
-                .build()
+                .build() }.value
     }
 
     override fun provideMasterWebService(context: Context): MoviesWebService {

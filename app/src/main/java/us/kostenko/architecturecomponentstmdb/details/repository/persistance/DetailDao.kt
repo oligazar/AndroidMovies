@@ -45,7 +45,7 @@ abstract class DetailDao {
     @Query("UPDATE movies SET liked = :isLiked WHERE id = :id")
     abstract fun like(id: Int, isLiked: Boolean)
 
-    /* Doesn't update like and sort fields */
+    /* Doesn't update like and index fields */
     fun updateMovie(movie: Movie, date: Date) {
         movie.apply {
             dateUpdate = date

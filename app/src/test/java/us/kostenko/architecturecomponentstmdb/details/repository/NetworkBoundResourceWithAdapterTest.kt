@@ -50,7 +50,7 @@ class NetworkBoundResourceWithAdapterTest {
     }
 
     @Test
-    fun `db not empty success from network`() {
+    fun `reload, when db is not empty, should return success`() {
         // arrange
         internetValues = sequenceOf(
                 FOO_2)
@@ -69,7 +69,7 @@ class NetworkBoundResourceWithAdapterTest {
     }
 
     @Test
-    fun `db empty success from network`() {
+    fun `reload, when db is empty, should return success`() {
         internetValues = sequence {
             yield(FOO_1)
             yield(FOO_2)
@@ -87,7 +87,7 @@ class NetworkBoundResourceWithAdapterTest {
     }
 
     @Test
-    fun `db empty error from network`() {
+    fun `reload, when db is empty, should return error`() {
 
         internetValues = sequence {
             yield(FOO_RELOAD)
@@ -109,7 +109,7 @@ class NetworkBoundResourceWithAdapterTest {
     }
 
     @Test
-    fun `db empty first error from network`() {
+    fun `reload, when db is empty, should return first error from network`() {
 
         internetValues = sequence {
             yield(FOO_EXCEPTION)

@@ -1,6 +1,9 @@
 package us.kostenko.architecturecomponentstmdb.common.utils
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -17,4 +20,8 @@ inline fun <reified VM : ViewModel> Fragment.viewModelProvider(crossinline provi
         override fun <T1 : ViewModel> create(aClass: Class<T1>) =
                 provider() as T1
     }).get(VM::class.java)
+}
+
+inline fun <T> LiveData<T>.observe(owner: LifecycleOwner, crossinline observe: (T) -> Unit) {
+    observe(owner, Observer { observe(it) })
 }

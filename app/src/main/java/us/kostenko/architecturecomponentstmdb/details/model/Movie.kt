@@ -25,11 +25,11 @@ data class Movie(
     @SerializedName("original_title")
     var originalTitle: String,
     var genres: ArrayList<Genre>? = null,
-    var dateUpdate: Date = Date(),
-
-    var liked: Boolean = false,
-    var sort: Int
-)
+    var dateUpdate: Date = Date()
+) {
+    var liked: Boolean = false
+    var sort: Int = -1
+}
 
 data class Genre(
     var id: Int,

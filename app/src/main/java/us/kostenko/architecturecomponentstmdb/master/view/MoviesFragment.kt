@@ -7,20 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.fragment_movies.recycler
+import kotlinx.android.synthetic.main.fragment_movies.swipeRefresh
 import kotlinx.android.synthetic.main.fragment_movies.toolbar
 import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
 import us.kostenko.architecturecomponentstmdb.common.utils.inTransaction
+import us.kostenko.architecturecomponentstmdb.common.utils.observe
 import us.kostenko.architecturecomponentstmdb.common.utils.viewModelProvider
 import us.kostenko.architecturecomponentstmdb.common.view.GridItemDecorator
 import us.kostenko.architecturecomponentstmdb.common.view.create
 import us.kostenko.architecturecomponentstmdb.details.view.MovieDetailFragment
-import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
-import us.kostenko.architecturecomponentstmdb.master.view.adapter.MoviesAdapter
+import us.kostenko.architecturecomponentstmdb.master.view.adapter.MoviesProgressAdapter
+import us.kostenko.architecturecomponentstmdb.master.view.adapter.RecyclerState
 import us.kostenko.architecturecomponentstmdb.master.viewmodel.MovieItemViewModel
 import us.kostenko.architecturecomponentstmdb.master.viewmodel.MoviesViewModel
 
@@ -52,16 +53,9 @@ class MoviesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val movieAdapter = MoviesAdapter(MovieDiffUtilCallback(), itemViewModel)
-        moviesViewModel.movies.observe(this, Observer { movies ->
-            movieAdapter.submitList(movies)
-        })
-        recycler.apply {
-            adapter = movieAdapter
-            layoutManager = GridLayoutManager(activity, 2)
-            addItemDecoration(GridItemDecorator(2, 8, 8, true))
-            setHasFixedSize(true)
-        }
+        initAdapter()
+        initSwipeToRefresh()
+
         itemViewModel.showDetails.observe(this, Observer { event ->
             event?.getValueIfNotHandled()?.let { movieId ->
                 showDetails(movieId)
@@ -69,15 +63,46 @@ class MoviesFragment : Fragment() {
         })
     }
 
+    private fun initAdapter() {
+        val movieAdapter = MoviesProgressAdapter(itemViewModel) {
+            moviesViewModel.retry()
+        }
+        moviesViewModel.movies.observe(this) { movies ->
+            movieAdapter.submitList(movies)
+        }
+        moviesViewModel.networkState.observe(this) {
+            movieAdapter.setNetworkState(it)
+        }
+        val rvLayoutManager = GridLayoutManager(context, 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int =
+                        when (movieAdapter.getItemViewType(position)) {
+                            R.layout.item_network_state -> 2 //number of columns of the grid
+                            else -> 1
+                        }
+            }
+        }
+        recycler.apply {
+            adapter = movieAdapter
+            layoutManager = rvLayoutManager
+            addItemDecoration(GridItemDecorator(2, 8, 8, true))
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun initSwipeToRefresh() {
+        moviesViewModel.refreshState.observe(this) {
+            swipeRefresh.isRefreshing = it == RecyclerState.InProgress
+        }
+        swipeRefresh.setOnRefreshListener {
+            moviesViewModel.refresh()
+        }
+    }
+
     private fun showDetails(movieId: Int) {
         activity?.supportFragmentManager?.inTransaction {
             replace(R.id.container, MovieDetailFragment.create(movieId))
             addToBackStack(null)
         }
-    }
-
-    internal inner class MovieDiffUtilCallback: DiffUtil.ItemCallback<MovieItem>() {
-        override fun areItemsTheSame(p0: MovieItem, p1: MovieItem) = p0.id == p1.id
-        override fun areContentsTheSame(p0: MovieItem, p1: MovieItem) = p0 == p1
     }
 }

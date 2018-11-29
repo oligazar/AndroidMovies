@@ -4,14 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.DialogInterface
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import okhttp3.Cache
 import us.kostenko.architecturecomponentstmdb.R
 
@@ -73,6 +73,8 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Fragmen
 inline fun Fragment.appCompatActivity(body: AppCompatActivity.() -> Unit) {
     (activity as? AppCompatActivity)?.body()
 }
+
+//inline fun <reified T>Any.castTo() = this as T
 
 /**
  * Get cache from context for OkHttpClient

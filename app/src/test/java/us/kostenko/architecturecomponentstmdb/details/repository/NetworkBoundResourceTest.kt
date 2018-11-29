@@ -51,23 +51,24 @@ class NetworkBoundResourceTest {
         saved.set(null)
     }
 
+    /** Naming convention:
+     * <method> after/before/when <action takes place> should <be in some state> */
+
     @Test
-    fun `reload saves value to database`() {
+    fun `reload, when reload, should save value to database`() {
         // arrange
         dbData.value = null
-        internetValues = sequenceOf(
-                FOO_1)
+        internetValues = sequenceOf(FOO_1)
 
         // act
         networkBoundResource.reload()
 
         // assert
-        assertThat(saved.get(), `is`(
-                FOO_1))
+        assertThat(saved.get(), `is`(FOO_1))
     }
 
     @Test
-    fun `db empty success from network`() {
+    fun `reload, when db is empty, should return progress and success`() {
         dbData.value = null
         internetValues = sequenceOf(
                 FOO_1)
@@ -82,7 +83,7 @@ class NetworkBoundResourceTest {
     }
 
     @Test
-    fun `db not empty`() {
+    fun `reload, when db is not empty, should return progress and success`() {
         dbData.value = FOO_1
 
         networkBoundResource.reload()
@@ -95,7 +96,7 @@ class NetworkBoundResourceTest {
     }
 
     @Test
-    fun `db not empty reload`() {
+    fun `reload, when db is not empty and will refetch, should return progress and success`() {
         dbData.value = FOO_RELOAD
         internetValues = sequenceOf(
                 FOO_1)
@@ -110,7 +111,7 @@ class NetworkBoundResourceTest {
     }
 
     @Test
-    fun `db empty success and failure from network`() {
+    fun `reload, when db is empty and fetch fails, should return success and failure`() {
         dbData.value = null
         internetValues =  sequence {
             yield(FOO_RELOAD)
@@ -131,7 +132,7 @@ class NetworkBoundResourceTest {
     }
 
     @Test
-    fun `db empty failure and success from network`() {
+    fun `reload, when db is empty and fetch fails then succeed, should return failure and success`() {
         dbData.value = null
         internetValues = sequence {
             yield(FOO_EXCEPTION)
@@ -152,11 +153,10 @@ class NetworkBoundResourceTest {
     }
 
     @Test
-    fun `db empty, network error, db update`() {
+    fun `reload, when db is empty and network error, should return error`() {
 
         dbData.value = null
-        internetValues = sequenceOf(
-                FOO_EXCEPTION)
+        internetValues = sequenceOf(FOO_EXCEPTION)
 
         networkBoundResource.reload()
         dbData.value = FOO_2

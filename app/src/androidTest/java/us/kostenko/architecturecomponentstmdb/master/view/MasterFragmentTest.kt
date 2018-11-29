@@ -5,7 +5,6 @@ import androidx.paging.PagedList
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.LargeTest
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -16,6 +15,7 @@ import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.master.model.MovieItem
 import us.kostenko.architecturecomponentstmdb.tools.FragmentTestRule
 import us.kostenko.architecturecomponentstmdb.tools.RecyclerViewItemCountAssertion.Companion.withItemCount
+import us.kostenko.architecturecomponentstmdb.tools.check
 import us.kostenko.architecturecomponentstmdb.tools.mockPagedList
 import us.kostenko.architecturecomponentstmdb.tools.withItemText
 
@@ -26,8 +26,7 @@ class MasterFragmentTest {
     private val moviesLD = MutableLiveData<PagedList<MovieItem>>()
     @get:Rule val fragmentRule = FragmentTestRule()
 
-    @Before
-    fun setUp() {
+    @Before fun setUp() {
         val fragment = MoviesFragment()
         fragment.moviesVmFactory = { mock { on { movies } doReturn moviesLD } }
         fragment.itemVmFactory = { mock { on { showDetails } doReturn MutableLiveData() } }
@@ -42,7 +41,9 @@ class MasterFragmentTest {
 
         moviesLD.postValue(pagedList)
 
-        onView(withId(R.id.recycler)).check(withItemCount(1))
-        onView(withItemText(title)).check(matches(isDisplayed()))
+        R.id.recycler check withItemCount(1)
+        onView(withItemText(title)) check matches(isDisplayed())
     }
 }
+
+

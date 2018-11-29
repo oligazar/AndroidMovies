@@ -48,9 +48,17 @@ abstract class MasterDao {
      */
     @Transaction
     open fun saveMovies(movies: ArrayList<Movie>, date: Date = Date()) {
-        movies.forEach {
-            updateMaster(it, date)
+        movies.mapIndexed { index, movie ->
+            val start = getNextIndex()
+            movie.sort = start + index
+            updateMaster(movie, date)
         }
+    }
+
+    @Transaction
+    open fun clearAndSaveNew(movies: ArrayList<Movie>) {
+        clear()
+        saveMovies(movies, Date())
     }
 
     fun updateMaster(movie: Movie, date: Date) {
@@ -62,4 +70,10 @@ abstract class MasterDao {
             }
         }
     }
+
+    @Query("DELETE FROM movies")
+    abstract fun clear()
+
+    @Query("SELECT MAX(sort) + 1 FROM movies")
+    abstract fun getNextIndex(): Int
 }

@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import us.kostenko.architecturecomponentstmdb.R
-import us.kostenko.architecturecomponentstmdb.common.utils.visibility
 
 class StateContainer: FrameLayout {
 
@@ -18,13 +18,13 @@ class StateContainer: FrameLayout {
     private var retry: View
 
     fun showLoading() {
-        children.forEach { it.visibility(it == loading) }
+        children.forEach { it.isVisible = it == loading }
     }
     fun showSuccess() {
-        children.forEach { it.visibility(it != loading && it != error) }
+        children.forEach { it.isVisible = it != loading && it != error }
     }
     fun showError(message: String) {
-        children.forEach { it.visibility(it == error) }
+        children.forEach { it.isVisible = it == error }
         errorMessage.text = message
     }
 
@@ -39,6 +39,7 @@ class StateContainer: FrameLayout {
     init {
         val inflater = LayoutInflater.from(context)
         loading = inflater.inflate(R.layout.loading, this, false).also { addView(it) }
+        loading.isVisible = false
         error = inflater.inflate(R.layout.error, this, false).also { addView(it) }
         errorMessage = error.findViewById(R.id.error_message)
         retry = error.findViewById(R.id.retry)

@@ -7,7 +7,7 @@ import us.kostenko.architecturecomponentstmdb.common.api.API_KEY
 import us.kostenko.architecturecomponentstmdb.master.model.Movies
 
 
-interface MoviesWebService {
+interface MoviesWebApi {
     /**
      * @GET declares an HTTP GET request
      * @Path("user") annotation on the userId parameter marks it as a

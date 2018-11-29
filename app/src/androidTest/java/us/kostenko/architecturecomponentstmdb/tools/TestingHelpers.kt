@@ -4,9 +4,12 @@ import android.text.TextUtils
 import android.view.View
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.core.internal.deps.guava.base.Preconditions.checkArgument
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -32,11 +35,17 @@ fun <T> mockPagedList(list: List<T>): PagedList<T> = mock {
     on { size } doReturn list.size
 }
 
+/** Mockito extensions */
 infix fun <T> T?.willReturn(value: T): BDDMockito.BDDMyOngoingStubbing<T?> =
         given(this).willReturn(value)
 
 infix fun <T> T?.willThrow(throwable: Throwable): BDDMockito.BDDMyOngoingStubbing<T?> =
         given(this).willThrow(throwable)
+
+/** Espresso extensions */
+infix fun ViewInteraction.check(action: ViewAssertion): ViewInteraction = this.check(action)
+
+infix fun Int.check(action: ViewAssertion): ViewInteraction = Espresso.onView(ViewMatchers.withId(this)).check(action)
 
 class RecyclerViewItemCountAssertion private constructor(private val matcher: Matcher<Int>) : ViewAssertion {
 

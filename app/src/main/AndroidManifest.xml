@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme.NoActionBar">
     </activity>
     <activity
-        android:name="us.kostenko.architecturecomponentstmdb.android.SplashScreenActivity"
+        android:name=".android.SplashScreenActivity"
         android:theme="@style/SplashTheme">
 
         <intent-filter>
@@ -26,6 +26,10 @@
             <category android:name="android.intent.category.LAUNCHER"/>
         </intent-filter>
     </activity>
+    <activity
+            android:name=".android.SingleFragmentActivity"
+        android:theme="@style/AppTheme.NoActionBar" />
+
     <meta-data
         android:name="io.fabric.ApiKey"
         android:value="52d522102b810d313c2f97b3e76cad8f2be7aa8b"

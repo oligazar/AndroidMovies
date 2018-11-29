@@ -12,11 +12,11 @@ class StateTest {
         assert(State.InitialLoading.showLoading() == State.InitialLoading)
         // Retry + showLoading() -> InitialLoading
         assert(State.Retry("Error").showLoading() == State.InitialLoading)
-        // Data + showLoading() -> Loading
+        // Data + showLoading() -> InProgress
         assert(State.Success("Data").showLoading() == State.Loading)
-        // Loading + showLoading() -> Loading
+        // InProgress + showLoading() -> InProgress
         assert(State.Loading.showLoading() == State.Loading)
-        // Error + showLoading() -> Loading
+        // Error + showLoading() -> InProgress
         assert(State.Error(Event("Error")).showLoading() == State.Loading)
     }
 
@@ -28,9 +28,9 @@ class StateTest {
         assert(State.Retry("Error").showData("Data") == State.Retry("Error"))
         // Data + showData() -> Data
         assert(State.Success("Data").showData("NewData") == State.Success("NewData"))
-        // Loading + showData() -> Loading
+        // InProgress + showData() -> InProgress
         assert(State.Loading.showData("Data") == State.Success("Data"))
-        // Error + showData() -> Loading
+        // Error + showData() -> InProgress
         assert(State.Error(Event("Error")).showData("Data") == State.Error(Event("Error")))
     }
 
@@ -42,7 +42,7 @@ class StateTest {
         assert(State.Retry("Retry").showError("Error") == State.Retry("Error"))
         // Data + showError() -> Error
         assert(State.Success("Data").showError("Error") == State.Error(Event("Error")))
-        // Loading + showError() -> Loading
+        // InProgress + showError() -> InProgress
         assert(State.Loading.showError("Error") == State.Error(Event("Error")))
         // Error + showError() -> Error
         assert(State.Error(Event("Error")).showError("NewError") == State.Error(Event("NewError")))

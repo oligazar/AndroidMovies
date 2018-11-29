@@ -11,9 +11,12 @@ import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.StateAdap
 import java.util.Calendar
 import java.util.Date
 
+const val FRESH_TIMEOUT_MINUTES = 1
+
 class MovieDetailRepositoryImpl(private val webService: MovieWebService,
                             private val movieDao: DetailDao,
-                            private val coroutines: Coroutines): MovieDetailRepository {
+                            private val coroutines: Coroutines,
+                            private val timeout: Int = FRESH_TIMEOUT_MINUTES): MovieDetailRepository {
 
     val adapter = StateAdapter<Movie>()
     private var movieId = 0
@@ -51,7 +54,7 @@ class MovieDetailRepositoryImpl(private val webService: MovieWebService,
     private fun getMaxRefreshTime(currentDate: Date): Date {
         val cal = Calendar.getInstance()
         cal.time = currentDate
-        cal.add(Calendar.MINUTE, - FRESH_TIMEOUT_MINUTES)
+        cal.add(Calendar.MINUTE, - timeout)
         return cal.time
     }
 }

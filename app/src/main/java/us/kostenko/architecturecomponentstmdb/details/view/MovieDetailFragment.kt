@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import kotlinx.android.synthetic.main.fragment_movie_detail.btnRefresh
 import kotlinx.android.synthetic.main.fragment_movie_detail.progress
 import kotlinx.android.synthetic.main.fragment_movie_detail.toolbar
 import timber.log.Timber
@@ -15,7 +17,6 @@ import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.common.di.Injector
 import us.kostenko.architecturecomponentstmdb.common.utils.appCompatActivity
 import us.kostenko.architecturecomponentstmdb.common.utils.viewModelProvider
-import us.kostenko.architecturecomponentstmdb.common.utils.visibility
 import us.kostenko.architecturecomponentstmdb.common.view.FragmentCreator
 import us.kostenko.architecturecomponentstmdb.common.view.StateContainer
 import us.kostenko.architecturecomponentstmdb.databinding.FragmentMovieDetailBinding
@@ -63,9 +64,10 @@ class MovieDetailFragment: Fragment() {
 
         binding.viewModel = viewModel
         viewModel.movie.observe(this, Observer { state ->
-            handleState(state)
+            handleState(    state)
             Timber.d("state: $state")
         })
+        btnRefresh.setOnClickListener { retry() }
     }
 
     private fun handleState(state: State<Movie>?) {
@@ -79,13 +81,13 @@ class MovieDetailFragment: Fragment() {
             is State.Success -> {
                 stateContainer.showSuccess()
                 binding.movie = state.data
-                progress.visibility(false)
+                progress.isVisible = false
             }
             is State.Loading -> {
-                progress.visibility(true)
+                progress.isVisible = true
             }
             is State.Error -> {
-                progress.visibility(false)
+                progress.isVisible = false
                 Timber.d("$state.message")
                 state.message.getValueIfNotHandled()?.let { showError(it) }
             }
