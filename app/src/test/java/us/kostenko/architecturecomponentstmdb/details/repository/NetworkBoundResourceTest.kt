@@ -7,8 +7,7 @@ import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.times
 import okhttp3.MediaType
 import okhttp3.ResponseBody
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -64,7 +63,7 @@ class NetworkBoundResourceTest {
         networkBoundResource.reload()
 
         // assert
-        assertThat(saved.get(), `is`(FOO_1))
+        assertThat(saved.get()).isEqualTo(FOO_1)
     }
 
     @Test

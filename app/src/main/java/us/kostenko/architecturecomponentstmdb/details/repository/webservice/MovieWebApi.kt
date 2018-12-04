@@ -7,7 +7,7 @@ import retrofit2.http.Query
 import us.kostenko.architecturecomponentstmdb.common.api.API_KEY
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 
-interface MovieWebService {
+interface MovieWebApi {
     /**
      * https://api.themoviedb.org/3/movie/260513?api_key=af64b54e13f4cd4ee4f1fba93a4d2952&language=en-US
      */

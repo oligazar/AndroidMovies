@@ -8,6 +8,10 @@ import us.kostenko.architecturecomponentstmdb.R
 import us.kostenko.architecturecomponentstmdb.common.utils.inTransaction
 import us.kostenko.architecturecomponentstmdb.master.view.MoviesFragment
 
+
+// TODO: firebase as a backend and storage
+// https://howtofirebase.com/firebase-data-structures-pagination-96c16ffdb5ca
+// https://pamartinezandres.com/lessons-learnt-the-hard-way-using-firebase-realtime-database-c609b52b9afb?gi=9137446e6e1a
 class MainActivity : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {

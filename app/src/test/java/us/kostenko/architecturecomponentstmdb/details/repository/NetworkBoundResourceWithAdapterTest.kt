@@ -7,7 +7,7 @@ import assertk.assertions.isInstanceOf
 import com.nhaarman.mockitokotlin2.InOrderOnType
 import okhttp3.MediaType
 import okhttp3.ResponseBody
-import org.hamcrest.MatcherAssert.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -163,10 +163,10 @@ class StateTester(private val invocation: Int, private val list: List<State<Foo>
     fun success(): StateTester = check(State.Success::class.java)
     fun loading(): StateTester = check(State.Loading::class.java)
     fun error(): StateTester = check(State.Error::class.java)
-    fun finish() { assertThat("Less invocations than expected, current invocation: $invocation", list.isEmpty()) }
+    fun finish() { assertThat(list.isEmpty()).describedAs("Less invocations than expected, current invocation: $invocation") }
 
     private fun check(clazz: Class<*>): StateTester {
-        assertThat("More invocations than expected, current invocation: $invocation, class: $clazz", list.isNotEmpty())
+        assertThat(list).isNotEmpty.describedAs("More invocations than expected, current invocation: $invocation, class: $clazz")
         assertk.assert(list[0], "invocation: $invocation").isInstanceOf(clazz)
 
         return StateTester(invocation + 1,

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import us.kostenko.architecturecomponentstmdb.common.Coroutines
 import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.details.repository.persistance.DetailDao
-import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
+import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebApi
 import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.NetworkBoundResource
 import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.State
 import us.kostenko.architecturecomponentstmdb.details.viewmodel.netres.StateAdapter
@@ -13,10 +13,10 @@ import java.util.Date
 
 const val FRESH_TIMEOUT_MINUTES = 1
 
-class MovieDetailRepositoryImpl(private val webService: MovieWebService,
-                            private val movieDao: DetailDao,
-                            private val coroutines: Coroutines,
-                            private val timeout: Int = FRESH_TIMEOUT_MINUTES): MovieDetailRepository {
+class MovieDetailRepositoryImpl(private val webService: MovieWebApi,
+                                private val movieDao: DetailDao,
+                                private val coroutines: Coroutines,
+                                private val timeout: Int = FRESH_TIMEOUT_MINUTES): MovieDetailRepository {
 
     val adapter = StateAdapter<Movie>()
     private var movieId = 0

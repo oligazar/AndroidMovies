@@ -5,7 +5,7 @@ import us.kostenko.architecturecomponentstmdb.common.AndroidCoroutines
 import us.kostenko.architecturecomponentstmdb.common.Coroutines
 import us.kostenko.architecturecomponentstmdb.common.api.retrofit.RetrofitManager
 import us.kostenko.architecturecomponentstmdb.common.database.MovieDatabase
-import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
+import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebApi
 import us.kostenko.architecturecomponentstmdb.master.repository.webservice.MoviesWebApi
 
 
@@ -23,7 +23,7 @@ object Injector: Injection() {
         return RetrofitManager.createService(context, MoviesWebApi::class.java)
     }
 
-    override fun provideDetailWebService(context: Context): MovieWebService {
-        return RetrofitManager.createService(context, MovieWebService::class.java)
+    override fun provideDetailWebService(context: Context): MovieWebApi {
+        return RetrofitManager.createService(context, MovieWebApi::class.java)
     }
 }

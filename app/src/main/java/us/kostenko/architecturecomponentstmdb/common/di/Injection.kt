@@ -10,7 +10,7 @@ import us.kostenko.architecturecomponentstmdb.details.model.Movie
 import us.kostenko.architecturecomponentstmdb.details.repository.FRESH_TIMEOUT_MINUTES
 import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepository
 import us.kostenko.architecturecomponentstmdb.details.repository.MovieDetailRepositoryImpl
-import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebService
+import us.kostenko.architecturecomponentstmdb.details.repository.webservice.MovieWebApi
 import us.kostenko.architecturecomponentstmdb.details.viewmodel.MovieDetailViewModel
 import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepository
 import us.kostenko.architecturecomponentstmdb.master.repository.MoviesRepositoryImpl
@@ -29,7 +29,7 @@ abstract class Injection {
 
     abstract fun provideMasterWebService(context: Context): MoviesWebApi
 
-    abstract fun provideDetailWebService(context: Context): MovieWebService
+    abstract fun provideDetailWebService(context: Context): MovieWebApi
 
     fun movieDetailViewModel(context: Context, timeout: Int = FRESH_TIMEOUT_MINUTES): MovieDetailViewModel {
         return MovieDetailViewModel(Injector.provideCoroutines(), provideMovieDetailRepository(context, timeout))

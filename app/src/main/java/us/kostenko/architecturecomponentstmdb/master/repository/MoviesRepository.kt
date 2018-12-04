@@ -15,7 +15,7 @@ import us.kostenko.architecturecomponentstmdb.master.view.adapter.RecyclerState
 
 interface MoviesRepository {
 
-    fun movies(): Listing<MovieItem>
+    fun movies(pageSize: Int = PAGE_SIZE): Listing<MovieItem>
 
     enum class Type {
         IN_MEMORY_BY_ITEM,
@@ -32,18 +32,17 @@ data class Listing<T> (
         val retry: () -> Unit
 )
 
-private const val PAGE_SIZE = 20
+const val PAGE_SIZE = 20
 
 class MoviesRepositoryImpl(private val moviesApi: MoviesWebApi,
                            private val moviesDao: MasterDao,
-                           private val coroutines: Coroutines,
-                           private val pageSize: Int = PAGE_SIZE): MoviesRepository {
+                           private val coroutines: Coroutines): MoviesRepository {
 
 
     private val networkState = MutableLiveData<RecyclerState>()
     private val refreshState = MutableLiveData<RecyclerState>()
 
-    override fun movies(): Listing<MovieItem> {
+    override fun movies(pageSize: Int): Listing<MovieItem> {
         val config = PagedList.Config.Builder()
                 .setPageSize(pageSize)
                 .setEnablePlaceholders(true).build()
