@@ -5,7 +5,7 @@ AndroidMovies Demo
 ===================================
 
 This is a Kotlin project that uses some Android Architecture Components (LiveData, ViewModel and Room) 
-with Coroutines and dependency injection by flawors.
+with Coroutines and dependency injection by flavors.
 
 ## Details
 * Kotlin
