@@ -1,5 +1,5 @@
 ## AndroidMovies
-![alt text](https://raw.githubusercontent.com/chrisbanes/cheesesquare/master/art/icon.png)
+![alt text](https://raw.githubusercontent.com/oligazar/AndroidMovies/master/AndroidMovies.jpg)
 
 AndroidMovies Demo
 ===================================
