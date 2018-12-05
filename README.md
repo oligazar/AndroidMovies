@@ -1,5 +1,5 @@
 ## AndroidMovies
-![alt text](https://raw.githubusercontent.com/oligazar/AndroidMovies/master/AndroidMovies.jpg)
+![alt text](https://raw.githubusercontent.com/oligazar/AndroidMovies/master/art/AndroidMovies.jpg)
 
 AndroidMovies Demo
 ===================================
