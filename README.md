@@ -9,7 +9,7 @@ with Coroutines and dependency injection by flavors.
 
 ## Details
 * Kotlin
-* Jetpack (LiveData, ViewModel, Room)
+* Jetpack (LiveData, ViewModel, Room, Paging library)
 * Dependency injection with flawors
 * asynchronous tasks are managed using [Coroutines](https://github.com/Kotlin/kotlinx.coroutines/blob/master/coroutines-guide.md) 
 * JVM tests are written using Mockito and [AssertJ](http://joel-costigliola.github.io/assertj/)
