@@ -4,8 +4,7 @@
 AndroidMovies Demo
 ===================================
 
-This is a Kotlin project that uses some Android Architecture Components (LiveData, ViewModel, Room and Paging library) 
-with Coroutines and dependency injection by flavors. MVVM architecture pattern is chosen, as it follows Google's app architecture guides.
+This is a Kotlin project featuring some Android Architecture Components (LiveData, ViewModel, Room and Paging library), Coroutines and dependency injection with flavors. MVVM architecture pattern is chosen, as it follows Google's app architecture guides.
 
 ## Details
 * Kotlin
